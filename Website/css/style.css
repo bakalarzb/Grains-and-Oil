@@ -190,7 +190,7 @@ h4, h5, h6 {
 .heading-surplus {
     font-size: 24px;
     font-weight: bold;
-    color: #9B7D56; /* Soft brown color */
+    color: #9B7D56; 
     text-transform: uppercase;
     letter-spacing: 2px;
     text-align: right;
@@ -737,4 +737,357 @@ footer {
 .social-media-list a {
     text-decoration: none !important; /* Completely removes underlines */
     color: inherit; /* Keeps icon color default */
+}
+
+/* FAQ Page */
+/* FAQ Page */
+/* FAQ Page */
+/* FAQ Page */
+
+.faq-header {
+    background-color: #59743d;
+    color: white;
+    text-align: center;
+    padding: 0px 20px 40px 20px;
+    position: relative;
+}
+
+.faq-header h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.logo-container img {
+    width: 80px;
+    position: absolute;
+    top: 10px;
+    right: 50%;
+    transform: translateX(50%);
+}
+
+/* FAQ Content */
+.faq-content {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.faq-item {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.faq-question {
+    background-color: #A0793D;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+.faq-answer {
+    padding: 15px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Marketplace Page */
+/* Marketplace Page */
+/* Marketplace Page */
+/* Marketplace Page */
+
+.hero-marketplace {
+    background: url('/images/pileveg.jpg') no-repeat center center/cover;
+    background-size: cover;
+    text-align: left;
+    padding: 0px 20px 40px 20px;
+    color: white;
+    position: relative;
+}
+
+.search-bar {
+    margin-top: 20px;
+}
+
+.search-bar input {
+    padding: 10px;
+    width: 60%;
+    border-radius: 5px;
+    border: none;
+}
+
+/* Filters */
+.filters {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.filter-btn, .filter-dropdown {
+    background: #8b6f40;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+/* Product Grid */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.product-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.product-card img {
+    width: 100%;
+    border-radius: 5px 5px 0px 0px;
+}
+
+.price {
+    font-weight: bold;
+    color: #59743d;
+}
+
+.cart-btn {
+    background: #59743d;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.unavailable-btn {
+    background: #ccc;
+    color: #777;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: not-allowed;
+    border-radius: 5px;
+}
+
+/* Pagination */
+.pagination {
+    display: flex; 
+    justify-content: center; 
+    gap: 5px; 
+    flex-wrap: nowrap; 
+    padding: 20px;
+}
+
+.page-btn, .next-btn {
+    border: none;
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 20px;
+    background: white;
+    border: 1px solid #ccc;
+}
+
+.page-btn.active {
+    background: #8b6f40;
+    color: white;
+}
+
+/* product page */
+/* product page */
+/* product page */
+/* product page */
+
+
+.product{
+    background: #59743d;
+    padding: 50px;
+}
+
+/* Product Container */
+.product-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 50px;
+    padding: 50px;
+    background: white;
+    margin: 50px auto;
+    max-width: 900px;
+    border-radius: 10px 10px 0px 0px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-image img {
+    width: 350px;
+    border-radius: 10px;
+}
+
+.product-details {
+    max-width: 400px;
+}
+
+.product-details h1 {
+    color: #333;
+}
+
+.product-price {
+    font-size: 24px;
+    color: #d88c37;
+    font-weight: bold;
+}
+
+.product-description {
+    color: #555;
+    font-size: 16px;
+}
+
+.availability {
+    font-weight: bold;
+    color: green;
+}
+
+.product-weight {
+    font-size: 14px;
+    color: #777;
+}
+
+.product-rating {
+    font-size: 18px;
+    color: #ff9800;
+}
+
+.add-to-cart {
+    background: #6d4c2f;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.add-to-cart:hover {
+    background: #54382a;
+}
+
+/* Similar Products */
+.similar-products {
+    text-align: center;
+    padding: 10px 0px 30px 0px;
+    background: #fff;
+}
+
+.similar-products h2 {
+    color: #333;
+}
+
+.product-list {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.product-card {
+    background: white;
+    padding: 5%;
+    border-radius: 8px;
+    text-align: center;
+    width: 180px;
+}
+
+.product-card img {
+    width: 100%;
+    border-radius: 8px 8px 0px 0px;
+}
+
+.product-card p {
+    margin: 5px 0;
+}
+
+.product-card button {
+    background: #6d4c2f;
+    color: white;
+    padding: 8px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.product-card button:hover {
+    background: #54382a;
+}
+
+/* About us pages */
+/* About us pages */
+/* About us pages */
+/* About us pages */
+
+.about-content {
+    padding: 50px;
+    max-width: 900px;
+    margin: auto;
+}
+
+.about-box {
+    background: #fff;
+    padding: 30px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.about-box h2 {
+    color: #8b6f40;
+}
+
+/* Team Section */
+.team-section {
+    background: #e2c277;
+    text-align: center;
+    padding: 50px;
+}
+
+.team-section h2 {
+    color: #333;
+}
+
+.team-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.team-member {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    text-align: center;
+}
+
+.team-member img {
+    width: 100%;
+    border-radius: 50%;
+}
+
+.team-member h3 {
+    margin: 10px 0 5px;
+    color: #8b6f40;
 }
