@@ -1,16 +1,22 @@
 <?php
-// db_config.php
+class Database {
+    private static $pdo = null;
 
-$host = 'localhost';
-$dbname = 'grainsandoil';
-$user = 'root'; // change this if needed
-$pass = '';     // your DB password
+    public static function getConnection() {
+        if (self::$pdo === null) {
+            $host = 'localhost';
+            $dbname = 'grainsandoil';
+            $user = 'root'; // change this if needed
+            $pass = ''; // your DB password
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Connected successfully"; 
-} catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+            try {
+                self::$pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass);
+                self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                die("Database connection failed: " . $e->getMessage());
+            }
+        }
+        return self::$pdo;
+    }
 }
 ?>
