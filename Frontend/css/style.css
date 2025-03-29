@@ -11,30 +11,35 @@ header {
     background-color: #fff;
     padding: 15px 0;
     color: black;
+    position: relative; /* Add relative positioning for proper logo placement */
 }
+
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+    position: relative; /* Added for positioning context */
 }
 
 .logo {
     font-size: 24px;
     font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Centered logo with overlapping effect */
 .logo-container {
-    position: absolute;
-    top: 100%; /* Moves it down */
-    left: 50%;
-    transform: translate(-50%, -50%);
+    display: flex; /* Center the logo */
+    justify-content: center;
+    align-items: center;
     background-color: white;
     border-radius: 50%;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 20;
+    z-index: 10; /* Keep the logo above other elements */
+    margin: 0 auto; /* Center the logo */
 }
 
 .logo-container img {
@@ -46,13 +51,14 @@ nav {
 .nav-icons {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px; /* Increased spacing between items */
 }
 
 .search-bar {
     padding: 5px;
     border-radius: 15px;
     border: 1px solid #ccc;
+    margin-right: 15px;
 }
 
 .profile-icon {
@@ -62,48 +68,28 @@ nav {
     object-fit: cover;
 }
 
-/* Ensuring navbar stays fixed */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .nav-links {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .logo-container {
-        top: 110%; /* Adjust logo position for smaller screens */
-    }
-}
-
-h1, h2, h3 {
-    font-family: 'Julius Sans One', sans-serif;
-}
-
-h4, h5, h6 {
-    font-family: 'Kodchasan', sans-serif;
-}
-
 .nav-links {
     list-style: none;
     display: flex;
     gap: 20px;
+    margin-right: auto; /* To ensure links are left-aligned */
 }
+
 .nav-links li {
     display: inline;
 }
+
 .nav-links a {
     color: black;
     text-decoration: none;
     font-size: 12px;
     font-family: 'Julius Sans One', sans-serif;
 }
+
 .nav-links a:hover {
     text-decoration: underline;
 }
+
 .search-bar input {
     padding: 5px;
     border-radius: 5px;
@@ -120,6 +106,8 @@ h4, h5, h6 {
     border-radius: 50% 50% 0% 50%;
     font-size: 18px;
     color: white;
+    margin-right: 15px;
+    margin-top: 5px;
 }
 
 /* Profile Picture */
@@ -128,7 +116,26 @@ h4, h5, h6 {
     height: 35px;
     border-radius: 50%; /* Makes it circular */
     object-fit: cover; /* Ensures the image looks good */
+    margin-top: 5px;
 }
+
+/* Ensuring navbar stays fixed */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .logo-container {
+        top: 110%; /* Adjust logo position for smaller screens */
+    }
+}
+
 
 /* Hero section */
 /* Hero section */
@@ -167,7 +174,7 @@ h4, h5, h6 {
     height: auto;
 }
 .hero {
-    background: url('/images/frog.avif') no-repeat center center/cover;
+    background: url('../images/frog.avif') no-repeat center center/cover;
     color: white;
     text-align: center;
     padding: 0px 20px 80px 20px;
@@ -398,7 +405,7 @@ h4, h5, h6 {
 /* Sustainability section */
 
 .hero-sustain {
-    background: url('/images/ladybirds.jpg') no-repeat center center/cover;
+    background: url('../images/ladybirds.jpg') no-repeat center center/cover;
     color: #242423;
     text-align: center;
     padding: 0px 20px 80px 20px;
@@ -837,7 +844,7 @@ footer {
 /* Marketplace Page */
 
 .hero-marketplace {
-    background: url('/images/pileveg.jpg') no-repeat center center/cover;
+    background: url('../images/pileveg.jpg') no-repeat center center/cover;
     background-size: cover;
     text-align: left;
     padding: 0px 20px 40px 20px;
@@ -1375,7 +1382,7 @@ footer {
 /* Contact page */
 
 .hero-contact {
-    background: url('/images/mobile.jpg') no-repeat center center/cover;
+    background: url('../images/mobile.jpg') no-repeat center center/cover;
     color: #fff;
     text-align: center;
     padding: 0px 20px 80px 20px;
@@ -1454,7 +1461,7 @@ footer {
   /* Blog page */
 
   .hero-blog {
-    background: url('/images/flower.jpg') no-repeat center center/cover;
+    background: url('../images/flower.jpg') no-repeat center center/cover;
     color: #242423;
     text-align: center;
     padding: 0px 20px 80px 20px;
@@ -1600,10 +1607,10 @@ footer {
 /* Vendor dashboard */
 
 .hero-vendor {
-    background: url('/images/farm.jpg') no-repeat center center/cover;
+    background: url('../images/farm.jpg') no-repeat center center/cover;
     color: #000;
     text-align: center;
-    padding: 0px 20px 80px 20px;
+    padding: 0px 20px 40px 20px;
 }
 
 .vendor-dashboard {
@@ -1745,74 +1752,179 @@ footer {
 /* Login and register Pages */ 
 /* Login and register Pages */
 
- .auth-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 2rem;
+/* Styling for the login container */
+.container-login {
+    max-width: 60%; /* Limit the width of the form */
+    margin: 50px auto; /* Center the form on the page */
+    padding: 30px; /* Add padding inside the form */
+    border: 1px solid #ddd; /* Light border around the form */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    background-color: #fff; /* White background */
+    margin-top: 5%;
+    margin-bottom: 5%;
 }
 
-.auth-card {
-    background-color: white;
-    padding: 2rem 3rem;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
+/* Style the form heading */
+.container-login h2 {
+    text-align: center; /* Center the heading */
+    margin-bottom: 30px; /* Space below the heading */
+    font-size: 24px;
+    color: #333; /* Darker text color */
 }
 
-.auth-card h2 {
-    font-family: 'Julius Sans One', sans-serif;
-    margin-bottom: 1.5rem;
-    color: #59743d;
-    text-align: center;
+/* Style the input fields */
+.container-login .form-control {
+    border-radius: 5px; /* Rounded input fields */
+    box-shadow: none; /* Remove default shadow */
+    border: 1px solid #ccc; /* Light border */
+    margin-bottom: 20px;
 }
 
-label {
-    display: block;
-    margin-bottom: 0.5rem;
+/* Style the submit button */
+.container-login .btn-primary {
+    width: 100%; /* Make the button full width */
+    padding: 12px; /* Add padding inside the button */
+    font-size: 16px; /* Slightly larger text */
+    border-radius: 5px; /* Rounded corners for the button */
+    background-color: #5C7E46; /* Bootstrap's primary color */
+    border: none; /* Remove border */
+    transition: background-color 0.3s ease; /* Smooth color change on hover */
+}
+
+/* Button hover effect */
+.container-login .btn-primary:hover {
+    background-color: #455a2b; /* Darker shade on hover */
+}
+
+/* Button hover effect */
+.container-login .btn-primary:hover {
+    background-color: #455a2b; /* Darker shade on hover */
+}
+
+/* Style the register button */
+.container-login .btn-secondary {
+    width: 100%; /* Make the button full width */
+    padding: 12px; /* Add padding inside the button */
+    font-size: 16px; /* Slightly larger text */
+    border-radius: 5px; /* Rounded corners for the button */
+    background-color: #6c757d; /* Bootstrap's primary color */
+    border: none; /* Remove border */
+    transition: background-color 0.3s ease; /* Smooth color change on hover */
+}
+
+/* Button hover effect */
+.container-login .btn-secondary:hover {
+    background-color: #5a6268; /* Darker shade on hover */
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 576px) {
+    .container-login {
+        padding: 20px; /* Less padding for smaller screens */
+    }
+
+    .container-login h2 {
+        font-size: 20px; /* Smaller heading font on mobile */
+    }
+}
+
+/* Styling for the login container */
+.container-Register {
+    max-width: 60%; /* Limit the width of the form */
+    margin: 50px auto; /* Center the form on the page */
+    padding: 30px; /* Add padding inside the form */
+    border: 1px solid #ddd; /* Light border around the form */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    background-color: #fff; /* White background */
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+/* Style the form heading */
+.container-Register h2 {
+    text-align: center; /* Center the heading */
+    margin-bottom: 30px; /* Space below the heading */
+    font-size: 24px;
+    color: #333; /* Darker text color */
+}
+
+/* Style for labels */
+.container-Register .col-form-label {
     font-weight: bold;
-    color: #242423;
+    color: #333;
 }
 
-.auth-container input[type="email"],
-.auth-container input[type="password"],
-.auth-container input[type="text"] {
-    width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1.25rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
+/* Style the input fields */
+.container-Register .form-control {
+    border-radius: 5px; /* Rounded input fields */
+    box-shadow: none; /* Remove default shadow */
+    border: 1px solid #ccc; /* Light border */
+    margin-bottom: 5px;
 }
 
-.btn-primary {
-    background-color: #836533;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 50%;
+/* Style the submit button */
+.container-Register .btn-primary {
+    width: 100%; /* Make the button full width */
+    padding: 12px; /* Add padding inside the button */
+    font-size: 16px; /* Slightly larger text */
+    border-radius: 5px; /* Rounded corners for the button */
+    background-color: #5C7E46; /* Bootstrap's primary color */
+    border: none; /* Remove border */
+    transition: background-color 0.3s ease; /* Smooth color change on hover */
 }
 
-.btn-primary:hover {
-    background-color: #6f552c;
+/* Button hover effect */
+.container-Register .btn-primary:hover {
+    background-color: #455a2b; /* Darker shade on hover */
 }
 
-.auth-card p {
-    margin-top: 1rem;
-    text-align: center;
+/* Button hover effect */
+.container-Register .btn-primary:hover {
+    background-color: #455a2b; /* Darker shade on hover */
 }
 
-.auth-card a {
-    color: #59743d;
-    text-decoration: none;
+/* Style the register button */
+.container-Register .btn-secondary {
+    width: 100%; /* Make the button full width */
+    padding: 12px; /* Add padding inside the button */
+    font-size: 16px; /* Slightly larger text */
+    border-radius: 5px; /* Rounded corners for the button */
+    background-color: #6c757d; /* Bootstrap's primary color */
+    border: none; /* Remove border */
+    transition: background-color 0.3s ease; /* Smooth color change on hover */
 }
 
-.auth-card a:hover {
-    text-decoration: underline;
+/* Button hover effect */
+.container-Register .btn-secondary:hover {
+    background-color: #5a6268; /* Darker shade on hover */
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 576px) {
+    .container-Register {
+        padding: 20px; /* Less padding for smaller screens */
+    }
+
+    .container-Register h2 {
+        font-size: 20px; /* Smaller heading font on mobile */
+    }
+}
+
+/* Ensure both buttons have the same height and width */
+#personalBtn, #businessBtn {
+    width: 50%;  /* Make buttons the same width */
+    height: 40px; /* Set the height to be the same for both */
+    font-size: 16px; /* Ensure font size is uniform */
+    padding: 8px 0;  /* Consistent padding */
+}
+
+#personalBtn.active, #businessBtn.active {
+    font-weight: bold; /* Optional: Make active button bold */
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
 }
