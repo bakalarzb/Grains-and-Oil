@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../tools.php'; // Include the tools with login functions
 require_once '../db_config.php'; // Include database connection
 include("header.php");
@@ -15,16 +16,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($isBusiness) {
             $user = loginBusiness($email, $password, $pdo);
             $message = "Business login successful! Welcome, " . htmlspecialchars($user['business_name']);
+
             $_SESSION['user'] = $user;
+            $_SESSION['user_id'] = $user['business_id'];         
+            $_SESSION['user_type'] = 'business';
             $_SESSION['isBusiness'] = true;
         } else {
             $user = loginCustomer($email, $password, $pdo);
             $message = "Customer login successful! Welcome, " . htmlspecialchars($user['customer_first_name']);
+
             $_SESSION['user'] = $user;
+            $_SESSION['user_id'] = $user['customer_id'];         
+            $_SESSION['user_type'] = 'customer';
             $_SESSION['isBusiness'] = false;
         }
+           
+
         // Redirect to a dashboard or home page after successful login
-        header("Location: dashboard.php");
+        header("Location: profile.php");
         exit();
     } catch (Exception $e) {
         $message = "Login failed: " . htmlspecialchars($e->getMessage());
@@ -34,6 +43,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div class="container-login mt-5">
     <h2>Login</h2>
+    <!-- Shows message after deleting account -->
+    <?php if (isset($_GET['deleted'])): ?>
+            <div class="alert alert-warning">Your account has been successfully deleted.</div> 
+    <?php endif; ?>
+
 
     <?php if ($message): ?>
         <div class="alert <?php echo strpos($message, 'successful') !== false ? 'alert-success' : 'alert-danger'; ?>">
@@ -87,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('registration') === 'success') {
         alert("Registration successful! Please log in.");
-        window.history.replaceState({}, document.title, "login.php");
+        window.history.replaceState({}, document.title, "profile.php");
     }
 </script>
 

@@ -60,7 +60,7 @@ include_once("../registration/customer_reg.php");
 
                         <div class="mb-3">
                             <label for="phone_number" class="form-label">Phone Number</label>
-                            <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Enter your phone number">
+                            <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Enter your phone number"pattern="\d{11}" maxlength="11" title="Phone number must be exactly 11 digits">
                         </div>
 
                         <div class="mb-3">
