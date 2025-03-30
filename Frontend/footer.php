@@ -6,11 +6,9 @@
                 <ul>
                     <li><a href="index.php">Home</a></li>
                     <li><a href="marketplace.php">Product Listings</a></li>
-                    <li><a href="vendor.php">Vendor Dashboard</a></li>
                     <li><a href="sustainability.php">Sustainability</a></li>
                 </ul>
                 <ul>
-                    <li><a href="login.php">Login</a></li>
                     <li><a href="register.php">Register</a></li>
                     <li><a href="contactus.php">Contact Us</a></li>
                     <li><a href="privacy.php">Privacy Policy</a></li>
