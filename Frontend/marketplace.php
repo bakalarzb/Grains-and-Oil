@@ -19,13 +19,19 @@ include("header.php");
 <section class="product-grid">
     <!-- Product Cards -->
     <div class="product-card">
-        <img src="images/lemon.jpg" alt="Genoa Lemons">
-        <h3>Genoa Lemons</h3>
-        <p>1kg minimum for purchase</p>
-        <p class="price">£1/kg</p>
-        <p class="rating">⭐⭐⭐⭐⭐ (52)</p>
-        <button class="cart-btn">Add To Cart</button>
-    </div>
+    <img src="images/lemon.jpg" alt="Genoa Lemons">
+    <h3>Genoa Lemons</h3>
+    <p>1kg minimum for purchase</p>
+    <p class="price">£1/kg</p>
+    <p class="rating">⭐⭐⭐⭐⭐ (52)</p>
+    
+    <form method="POST" action="add_to_cart.php">
+        <input type="hidden" name="product_name" value="Genoa Lemons">
+        <input type="hidden" name="price" value="1">
+        <input type="hidden" name="image" value="images/lemon.jpg">
+        <button type="submit" class="cart-btn">Add To Cart</button>
+    </form>
+</div>
 
     <div class="product-card">
         <img src="images/grapes.jpg" alt="Grapes">

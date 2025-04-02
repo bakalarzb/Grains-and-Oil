@@ -44,7 +44,9 @@
             <input type="text" placeholder="Search...">
         </div>
         <div class="cart-icon">
+            <a href="basket.php">
             <i class="fa-solid fa-shopping-cart"></i>
+            </a>
         </div>
         <div class="profile-picture">
             <a href="profile.php">
