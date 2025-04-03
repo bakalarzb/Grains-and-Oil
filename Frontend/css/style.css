@@ -883,7 +883,7 @@ footer {
 /* Product Grid */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
     max-width: 1200px;
     margin: 20px auto;
@@ -895,6 +895,9 @@ footer {
     padding: 15px;
     border-radius: 8px;
     text-align: center;
+    width: 100%; /* Ensure the card takes the full width of the grid cell */
+    max-width: 300px; /* Set a maximum width to make the card wider */
+    margin: 0 auto; /* Center the card within the grid cell */
 }
 
 .product-card img {

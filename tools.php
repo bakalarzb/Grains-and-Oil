@@ -3,6 +3,7 @@ require_once 'db_config.php';
 
 /**
  * This file contains utility functions.
+ *
  * All database interactions use PDO prepared statements to prevent SQL injection.
  * Functions are wrapped in existence checks to avoid redefinition errors.
  */
@@ -140,6 +141,7 @@ if (!function_exists('registerCustomer')) {
 /**
  * Logs in a business user by verifying their email and password.
  * Returns an array with business details on success, or throws an exception on failure.
+ *
  * @param string $email The business email
  * @param string $password The password to verify
  * @param PDO $pdo The database connection
@@ -181,6 +183,7 @@ if (!function_exists('loginBusiness')) {
 /**
  * Logs in a customer user by verifying their email and password.
  * Returns an array with customer details on success, or throws an exception on failure.
+ *
  * @param string $email The customer email
  * @param string $password The password to verify
  * @param PDO $pdo The database connection
@@ -232,62 +235,106 @@ if (!function_exists('startSessionIfNeeded')) {
 
 /**
  * Adds a new product to the product table
+ *
  * @param int $businessId The ID of the business adding the product
  * @param array $productData Associative array with product details
  * @return array JSON-encodable array with success status and product ID
  */
-function addProduct($businessId, $productData): array
-{
-    try {
-        $pdo = Database::getConnection();
+if (!function_exists('addProduct')) {
+    function addProduct($businessId, $productData): array
+    {
+        try {
+            $pdo = Database::getConnection();
 
-        $stmt = $pdo->prepare("
-            INSERT INTO product (
-                product_business_id, 
-                product_category_name, 
-                product_name, 
-                price, 
-                description, 
-                weight
-            ) VALUES (
-                :business_id, 
-                :category, 
-                :name, 
-                :price, 
-                :description, 
-                :weight
-            )
-        ");
+            $stmt = $pdo->prepare("
+                INSERT INTO product (
+                    product_business_id, 
+                    product_category_name, 
+                    product_name, 
+                    price, 
+                    description, 
+                    weight
+                ) VALUES (
+                    :business_id, 
+                    :category, 
+                    :name, 
+                    :price, 
+                    :description, 
+                    :weight
+                )
+            ");
 
-        $stmt->execute([
-            'business_id' => $businessId,
-            'category' => $productData['product_category_name'],
-            'name' => $productData['product_name'],
-            'price' => $productData['price'],
-            'description' => $productData['description'],
-            'weight' => $productData['weight']
-        ]);
+            $stmt->execute([
+                'business_id' => $businessId,
+                'category' => $productData['product_category_name'],
+                'name' => $productData['product_name'],
+                'price' => $productData['price'],
+                'description' => $productData['description'],
+                'weight' => $productData['weight']
+            ]);
 
-        return [
-            'success' => true,
-            'product_id' => $pdo->lastInsertId()
-        ];
-    } catch (PDOException $e) {
-        return [
-            'success' => false,
-            'error' => 'Failed to add product: ' . $e->getMessage()
-        ];
+            return [
+                'success' => true,
+                'product_id' => $pdo->lastInsertId()
+            ];
+        } catch (PDOException $e) {
+            return [
+                'success' => false,
+                'error' => 'Failed to add product: ' . $e->getMessage()
+            ];
+        }
     }
 }
 
-function getCategories() {
-    try {
-        $pdo = Database::getConnection();
+/**
+ * Fetch all categories from the category table.
+ *
+ * This function connects to the database and retrieves all records from
+ * the 'category' table. It returns an associative array containing category
+ * data or terminates the script if an error occurs.
+ *
+ * @return array An array of categories with their details.
+ */
+if (!function_exists('getCategories')) {
+    function getCategories()
+    {
+        try {
+            $pdo = Database::getConnection();
 
-        // Fetch categories
-        $query = $pdo->query("SELECT * FROM category");
-        return $query->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        die("Database error: " . $e->getMessage()); // Handle error
+            // Fetch categories
+            $query = $pdo->query("SELECT * FROM category");
+
+            // Return all category records as an associative array
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Handle database connection errors
+            die("Database error: " . $e->getMessage());
+        }
+    }
+}
+
+/**
+ * Fetch all products from the product table.
+ *
+ * This function retrieves all records from the 'product' table.
+ * It returns an associative array containing product details or
+ * terminates the script if a database error occurs.
+ *
+ * @return array An array of products with their details.
+ */
+if (!function_exists('getAllProducts')) {
+    function getAllProducts() {
+        try {
+            $pdo = Database::getConnection(); // Get database connection
+
+            // Fetch all records from the product table
+            $query = $pdo->query("SELECT * FROM product");
+
+            // Return all product records as an associative array
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Handle database errors
+            die("Database error: " . $e->getMessage());
+        }
     }
 }
