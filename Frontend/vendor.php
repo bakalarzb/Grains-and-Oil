@@ -1,4 +1,50 @@
 <?php
+
+// Include tools.php for the addProduct function
+require_once '../tools.php';
+require_once '../db_config.php';
+
+$categories = getCategories();
+
+// Handle AJAX request to add product
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+    $isJsonRequest = stripos($contentType, 'application/json') !== false;
+
+    error_log("Is JSON Request: " . ($isJsonRequest ? 'Yes' : 'No'));
+
+    if ($isJsonRequest) {
+        header('Content-Type: application/json');
+
+        // Get the POST data
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        // Debug: Log the received data
+        error_log("Received Data: " . print_r($data, true));
+
+        // Start session to get business ID
+        session_start();
+        $loggedInBusinessId = $_SESSION['user']['business_id'] ?? null;
+
+        if (!$loggedInBusinessId) {
+            echo json_encode(['success' => false, 'error' => 'No business ID provided']);
+            exit;
+        }
+
+        // Call the reusable addProduct function from tools.php
+        $result = addProduct($loggedInBusinessId, $data);
+
+        // Debug: Log the result
+        error_log("Result: " . print_r($result, true));
+
+        // Output the result
+        echo json_encode($result);
+        exit; // Ensure no further output
+    } else {
+        error_log("Not a JSON request, Content-Type: " . $contentType);
+    }
+}
+
 include("header.php");
 ?>
 
@@ -44,37 +90,39 @@ include("header.php");
     <!-- Add Product Modal -->
     <div id="productModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick='closeModal("productModal")'>&times;</span>
+            <span class="close" onclick="closeModal('productModal')">×</span>
             <h2>Add New Product</h2>
             <form id="productForm">
                 <div class="form-group">
                     <label for="productName">Product Name:</label>
-                    <input type="text" id="productName" name="productName" required>
+                    <input type="text" id="productName" name="product_name" maxlength="100" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="productType">Product Type:</label>
-                    <select id="productType" name="productType" required>
-                        <option value="">Select Type</option>
-                        <option value="grain">Grain</option>
-                        <option value="oil">Oil</option>
-                        <option value="other">Other</option>
+                    <label for="productCategory">Category:</label>
+                    <select id="productCategory" name="product_category_name" required>
+                        <option value="">Select Category</option>
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?= htmlspecialchars($category['category_name']) ?>">
+                                <?= htmlspecialchars($category['category_name']) ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="quantity">Quantity (in KG):</label>
-                    <input type="number" id="quantity" name="quantity" min="0" step="0.1" required>
+                    <label for="price">Price (per KG or L):</label>
+                    <input type="number" id="price" name="price" min="0" max="99999.99" step="0.01" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="price">Price (per KG):</label>
-                    <input type="number" id="price" name="price" min="0" step="0.01" required>
+                    <label for="weight">Weight/Volume (in KG or L):</label>
+                    <input type="number" id="weight" name="weight" min="0" max="999.9" step="0.1" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Description:</label>
-                    <textarea id="description" name="description" rows="4"></textarea>
+                    <label for="description">Description (Max: 500 characters):</label>
+                    <textarea id="description" name="description" rows="4" maxlength="500"></textarea>
                 </div>
 
                 <button type="submit" class="submit-btn">Add Product</button>
