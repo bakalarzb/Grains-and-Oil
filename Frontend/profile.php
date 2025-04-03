@@ -35,7 +35,14 @@ if (!$user) {
 
 <main class="user-summary-container">
     <div class="user-summary-card">
-        <img src="images/user.jpg" alt="User Profile" class="user-avatar">
+        <!-- Dynamic Avatar based on username -->
+        <?php
+            $avatarSeed = $user_type === 'business' 
+                ? $user['business_name'] 
+                : $user['customer_username'];
+            $avatarUrl = "https://api.dicebear.com/7.x/initials/svg?seed=" . urlencode($avatarSeed);
+        ?>
+        <img src="<?= $avatarUrl ?>" alt="User Avatar" class="user-avatar" style="border-radius: 50%; width: 120px; height: 120px; object-fit: cover;">
 
         <div class="user-details">
             <?php if ($user_type === 'business'): ?>
@@ -56,12 +63,17 @@ if (!$user) {
                 </div>
             <?php endif; ?>
 
-            <div class="profile-actions">
+            <div class="profile-actions d-flex gap-2 flex-wrap mt-3">
                 <a href="edit_profile.php" class="btn btn-warning">Edit Profile</a>
+                <?php if ($user_type === 'customer'): ?>
+                    <a href="order_history.php" class="btn btn-info">Order History</a>
+                <?php else: ?>
+                    <a href="view-dashboard.php" class="btn btn-info">View Dashboard</a>
+                <?php endif; ?>
                 <a href="delete_profile.php" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">Delete Account</a>
             </div>
 
-            <div class="badges">
+            <div class="badges mt-3">
                 <span class="badge">Verified</span>
                 <?php if ($user_type === 'business'): ?>
                     <span class="badge">Vendor</span>
@@ -72,5 +84,6 @@ if (!$user) {
         </div>
     </div>
 </main>
+
 
 <?php include("footer.php"); ?>

@@ -50,7 +50,25 @@
         </div>
         <div class="profile-picture">
             <a href="profile.php">
-                <img src="images/user.jpg" alt="User Profile">
+            <?php
+            $avatarSeed = '';
+            $avatarUrl = 'images/user.jpg'; // Default
+
+            if ($is_logged_in && isset($_SESSION['user'])) {
+                $user = $_SESSION['user'];
+                $avatarSeed = $_SESSION['isBusiness']
+                    ? ($user['business_name'] ?? 'business')
+                    : ($user['customer_username'] ?? 'user');
+
+                $avatarUrl = "https://api.dicebear.com/7.x/initials/svg?seed=" . urlencode($avatarSeed);
+            }
+            ?>
+
+            <div class="profile-picture">
+                <a href="profile.php">
+                    <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                </a>
+            </div>
             </a>
         </div>
 
