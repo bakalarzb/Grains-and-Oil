@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("db_config.php");
+include("../db_config.php");
 include("header.php");
 
 $pdo = Database::getConnection();
