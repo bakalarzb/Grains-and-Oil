@@ -283,7 +283,7 @@ include("footer.php");
     });
 </script>
 
-<!-- Link to the external JavaScript file -->
+<!-- Link to external JavaScript file -->
 <script src="../js/scripts.js"></script>
 
 </body>

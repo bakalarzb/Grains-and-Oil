@@ -49,3 +49,51 @@ function fetchCoordinates(postcode, callback) {
             callback(null, null);
         });
 }
+
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'block';
+    } else {
+        console.error(`Modal with ID '${modalId}' not found`);
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    } else {
+        console.error(`Modal with ID '${modalId}' not found`);
+    }
+}
+
+// Handle form submission and modal interactions
+document.addEventListener('DOMContentLoaded', function() {
+    const productForm = document.getElementById('productForm');
+    if (productForm) {
+        productForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const productData = {
+                name: document.getElementById('productName').value,
+                type: document.getElementById('productType').value,
+                quantity: document.getElementById('quantity').value,
+                price: document.getElementById('price').value,
+                description: document.getElementById('description').value
+            };
+
+            console.log('New Product:', productData);
+            closeModal('productModal'); // Pass the ID here
+            this.reset();
+        });
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('productModal');
+        if (event.target === modal) {
+            closeModal('productModal');
+        }
+    };
+});
