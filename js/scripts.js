@@ -68,24 +68,51 @@ function closeModal(modalId) {
     }
 }
 
-// Handle form submission and modal interactions
 document.addEventListener('DOMContentLoaded', function() {
     const productForm = document.getElementById('productForm');
     if (productForm) {
         productForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
+            // Get form values
             const productData = {
-                name: document.getElementById('productName').value,
-                type: document.getElementById('productType').value,
-                quantity: document.getElementById('quantity').value,
-                price: document.getElementById('price').value,
-                description: document.getElementById('description').value
+                product_name: document.getElementById('productName').value,
+                product_category_name: document.getElementById('productCategory').value,
+                price: parseFloat(document.getElementById('price').value),
+                weight: parseFloat(document.getElementById('weight').value),
+                description: document.getElementById('description').value || null
             };
 
-            console.log('New Product:', productData);
-            closeModal('productModal'); // Pass the ID here
-            this.reset();
+            // Log productData to the console
+            console.log('Product Data to be sent:', productData);
+
+            // Send data to vendor-dashboard.php via AJAX
+            fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(productData)
+            })
+                .then(response => response.json())  // Read the response as JSON once
+                .then(data => {
+                    // Log session data from the response
+                    console.log('Session Data:', data.session_data);
+
+                    if (data.success) {
+                        console.log('Product added successfully with ID:', data.product_id);
+                        closeModal('productModal');
+                        productForm.reset();
+                        alert('Listing created successfully!'); // Add success alert
+                    } else {
+                        console.error('Error:', data.error);
+                        alert('Failed to add product: ' + data.error + '\nSession Data: ' + data.session_data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    alert('An error occurred while adding the product.');
+                });
         });
     }
 
