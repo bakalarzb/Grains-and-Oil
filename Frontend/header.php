@@ -40,9 +40,10 @@
             <li><a href="contactus.php">Contact Us</a></li>
         </ul>
 
-        <div class="search-bar">
-            <input type="text" placeholder="Search...">
-        </div>
+        <form action="search.php" method="GET" class="search-bar d-flex">
+            <input type="text" name="query" class="form-control" placeholder="Search products..." required>
+        </form>
+
         <div class="cart-icon">
             <a href="basket.php">
             <i class="fa-solid fa-shopping-cart"></i>
