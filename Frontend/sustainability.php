@@ -1,11 +1,11 @@
 <?php
+$heroTitle = "Sustainability";
+$heroClass = "hero-sustain";
+$heroSubtitle = "WStay informed with the latest insights on sustainability, farming tips, and community stories from the heart of Grains & Oil.";
+
 include("header.php");
 ?>
 
-    <section class="hero-sustain">
-        <h1>Sustainability</h1>
-        <p>Stay informed with the latest insights on sustainability, farming tips, and community stories from the heart of Grains & Oil.</p>
-    </section>
 
     <main class="sustain-main">
         <div class="stat-grid">

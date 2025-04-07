@@ -40,9 +40,10 @@
             <li><a href="contactus.php">Contact Us</a></li>
         </ul>
 
-        <div class="search-bar">
-            <input type="text" placeholder="Search...">
-        </div>
+        <form action="search.php" method="GET" class="search-bar d-flex">
+            <input type="text" name="query" class="form-control" placeholder="Search products..." required>
+        </form>
+
         <div class="cart-icon">
             <a href="basket.php">
             <i class="fa-solid fa-shopping-cart"></i>
@@ -86,7 +87,9 @@
     </nav>
 </header>
 
-<section class="hero-vendor">
+
+<?php if (isset($heroTitle) && isset($heroClass)) : ?>
+<section class="<?php echo htmlspecialchars($heroClass); ?>">
     <div class="semi-circle-container">
         <div class="semi-circle">
             <a href="index.php">
@@ -94,4 +97,12 @@
             </a>
         </div>
     </div>
+    <h1><?php echo htmlspecialchars($heroTitle); ?></h1>
+    <?php if (isset($heroSubtitle)) : ?>
+        <p><?php echo htmlspecialchars($heroSubtitle); ?></p>
+    <?php endif; ?>
+    <?php if (isset($heroButton)) : ?>
+        <?php echo $heroButton; ?>
+    <?php endif; ?>
 </section>
+<?php endif; ?>

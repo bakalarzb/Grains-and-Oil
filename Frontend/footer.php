@@ -5,7 +5,7 @@
             <div class="quick-links-grid">
                 <ul>
                     <li><a href="index.php">Home</a></li>
-                    <li><a href="marketplace.php">Product Listings</a></li>
+                    <li><a href="aboutus.php">About Us</a></li>
                     <li><a href="sustainability.php">Sustainability</a></li>
                 </ul>
                 <ul>

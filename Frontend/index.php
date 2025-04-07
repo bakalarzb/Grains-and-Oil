@@ -1,12 +1,11 @@
 <?php
+$heroTitle = "WELCOME TO GRAINS AND OIL MARKETPLACE!";
+$heroClass = "hero";
+$heroSubtitle = "Where Community Meets Sustainability, One Seed at a Time.";
+
 include("header.php");
 ?>
 
-    <section class="hero"
-        <h1>WELCOME TO GRAINS AND OIL MARKETPLACE!</h1>
-        <p>Where Community Meets Sustainability, One Seed at a Time.</p>
-        <button onclick="window.location.href='marketplace.php'">Explore Our Products</button>
-    </section>
 
     <br>
 

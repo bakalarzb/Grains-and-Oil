@@ -1,4 +1,8 @@
 <?php
+$heroTitle = "FIRST GRADE GOODIES!";
+$heroClass = "hero-marketplace";
+$heroSubtitle = "Where Community Meets Sustainability, One Seed at a Time.";
+
 include("header.php");
 include("../tools.php");
 
@@ -15,7 +19,7 @@ $categoryImages = [
 ?>
 
     <section class="hero-marketplace">
-        <h1>FIRST GRADE GOODIES!</h1>
+        <h1></h1>
         <p>Where Community Meets Sustainability, One Seed at a Time.</p>
     </section>
 

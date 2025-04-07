@@ -1,10 +1,8 @@
 <?php
+$heroTitle = "Contact Us";
+$heroClass = "hero-contact";
 include("header.php");
 ?>
-
-    <section class="hero-contact">
-        <h1>Contact Us</h1>
-    </section>
 
     <main class="contact-section">
 

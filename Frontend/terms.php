@@ -1,11 +1,11 @@
 <?php
+$heroTitle = "Terms of Service";
+$heroClass = "hero";
+$heroSubtitle = "Welcome to Grains & Oil. Please read these Terms of Service carefully before using our platform.";
+
 include("header.php");
 ?>
 
-    <section class="hero">
-        <h1>Terms of Service</h1>
-        <p>Welcome to Grains & Oil. Please read these Terms of Service carefully before using our platform</p>
-    </section>
 
     <section class="terms-of-service">
         <div class="container-terms">

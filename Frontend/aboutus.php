@@ -1,12 +1,16 @@
 <?php
+$heroTitle = "The Team";
+$heroClass = "hero-vendor";
+$heroSubtitle = "About Us";
+
 include("header.php");
 ?>
 
-    <h1><h1>The Team</h1></h1>
+
+    
     <main>
         <div class="hero-section">
-            <h2>ABOUT US</h2>
-            <p>Bringing Fresh, High-Quality Farm Products Directly to Your Doorstep.</p>
+           
         </div>
 
         <section class="about-content">

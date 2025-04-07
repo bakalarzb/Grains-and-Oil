@@ -1,10 +1,11 @@
 <?php
+$heroTitle = "Privacy Policy";
+$heroClass = "hero";
+$heroSubtitle = "Your privacy matters. Here's how we collect, use, and protect your information on the Grains & Oil platform.";
+
 include("header.php");
 ?>
-    <section class="hero">
-        <h1>Privacy Policy</h1>
-        <p>Your privacy matters. Here's how we collect, use, and protect your information on the Grains & Oil platform</p>
-    </section>
+
 
     <section class="privacy-policy">
         <div>
