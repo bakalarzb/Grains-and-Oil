@@ -1644,6 +1644,12 @@ footer {
     color: #836533; /* Main Brown */
 }
 
+.vendor-heading {
+    text-align: center;
+    font-family: 'Karla', sans-serif;
+    color: #242423;
+}
+
 .dashboard-actions {
     display: grid;
     gap: 2rem;
@@ -1762,6 +1768,34 @@ footer {
 
 .submit-btn:hover {
     background-color: #455a2b;
+}
+
+.qr-code-group.hidden {
+    display: none;
+}
+
+.qr-btn {
+    background-color: #59743d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.qr-btn:hover {
+    background-color: #455a2b;
+}
+
+/* Style the icon slot */
+#qrCodeOutput [slot="icon"] {
+    width: 60px;  /* Adjust size as needed */
+    height: 60px;
+    position: absolute; /* Center within QR code */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center perfectly */
+    border-radius: 50%; /* Make it circular */
+    object-fit: cover; /* Ensure image fits within circle */
 }
 
 /* Privacy Policy */

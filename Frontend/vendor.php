@@ -1,5 +1,4 @@
 <?php
-
 // Include tools.php for the addProduct function
 require_once '../tools.php';
 require_once '../db_config.php';
@@ -46,43 +45,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 include("header.php");
+
+$vendorId = $_SESSION['user']['business_id']
+
 ?>
 
     <br>
 
-    <div class="heading">
+    <div class="pt-3 pb-3" style="text-align: center; font-family: 'Karla', sans-serif; color: #242423;">
         <h1>Vendor Dashboard</h1>
         <p>Easily list, manage, and monitor your surplus produce on the Grains & Oil Marketplace.</p>
     </div>
 
     <section class="vendor-dashboard">
-        <div class="vendor-container">    
-            <div class="dashboard-actions">
+        <div class="vendor-container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-10">
+                    <div class="row justify-content-center pb-4">
+                        <!-- Add Product Card -->
+                        <div class="col-6 col-xl-5">
+                            <div class="dashboard-card text-center p-4 h-100">
+                                <i class="fa-solid fa-plus fa-2x mb-3"></i>
+                                <h3>Add New Product</h3>
+                                <p>Quickly list surplus produce with details like quantity, type, and price.</p>
+                                <button class="dashboard-btn mt-2" onclick='openModal("productModal")'>Create Listing</button>
+                            </div>
+                        </div>
 
-                <!-- Add Product Card -->
-                <div class="dashboard-card">
-                    <i class="fa-solid fa-plus"></i>
-                    <h3>Add New Product</h3>
-                    <p>Quickly list surplus produce with details like quantity, type, and price.</p>
-                    <button class="dashboard-btn" onclick='openModal("productModal")'>Create Listing</button>
+                        <!-- Edit Listings Card -->
+                        <div class="col-6 col-xl-5">
+                            <div class="dashboard-card text-center p-4 h-100">
+                                <i class="fa-solid fa-pen-to-square fa-2x mb-3"></i>
+                                <h3>Manage Listings</h3>
+                                <p>View, update, or remove existing product listings with ease.</p>
+                                <a href="#" class="dashboard-btn mt-2">View Listings</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <!-- Track Analytics Card -->
+                        <div class="col-6 col-xl-5">
+                            <div class="dashboard-card text-center p-4 h-100">
+                                <i class="fa-solid fa-chart-line fa-2x mb-3"></i>
+                                <h3>Sales & Analytics</h3>
+                                <p>Track your performance, orders, and get insights on buyer activity.</p>
+                                <a href="#" class="dashboard-btn mt-2">View Dashboard</a>
+                            </div>
+                        </div>
+
+                        <!-- Create QR Code Card -->
+                        <div class="col-6 col-xl-5">
+                            <div class="dashboard-card text-center p-4 h-100">
+                                <i class="fa-solid fa-qrcode fa-2x mb-3"></i>
+                                <h3>Create Waste QR Code</h3>
+                                <p>Create a QR code to track your business waste.</p>
+                                <button class="dashboard-btn mt-2" onclick='openModal("QRModal")'>Create Code</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- Edit listings Card -->
-                <div class="dashboard-card">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                    <h3>Manage Listings</h3>
-                    <p>View, update, or remove existing product listings with ease.</p>
-                    <a href="#" class="dashboard-btn">View Listings</a>
-                </div>
-
-                <!-- Track Analytics Card -->
-                <div class="dashboard-card">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <h3>Sales & Analytics</h3>
-                    <p>Track your performance, orders, and get insights on buyer activity.</p>
-                    <a href="#" class="dashboard-btn">View Dashboard</a>
-                </div>
-
             </div>
         </div>
     </section>
@@ -130,6 +152,74 @@ include("header.php");
         </div>
     </div>
 
+    <!-- Generate QR Code Modal -->
+    <div id="QRModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('QRModal')">×</span>
+            <h2>Create Waste QR Code</h2>
+            <form id="jsonForm">
+                <div class="form-group">
+                    <label for="wasteWeight">Weight/Volume (in KG or L):</label>
+                    <input type="number" id="wasteWeight" name="wasteWeight" step="0.1" min="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="collectionDate">Collection Date:</label>
+                    <input type="date" id="collectionDate" name="collectionDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select Category</option>
+                        <?php foreach ($categories as $category): ?>
+                            <option value="<?= htmlspecialchars($category['category_name']) ?>">
+                                <?= htmlspecialchars($category['category_name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                        <option value="agri">Agricultural Waste</option>
+                        <option value="manure">Manure</option>
+                        <option value="mixed">Mixed Organic</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="destination">Destination (Biogas Site ID):</label>
+                    <select id="destination" name="destination" required>
+                        <option value="">Select Site</option>
+                        <option value="BG001">Site BG001</option>
+                        <option value="BG002">Site BG002</option>
+                        <option value="BG003">Site BG003</option>
+                        <option value="BG004">Site BG004</option>
+                    </select>
+                </div>
+                <input type="hidden" id="vendorId" name="vendorId" value="<?php echo htmlspecialchars($vendorId); ?>">
+                <button type="submit" class="submit-btn">Generate QR Code</button>
+            </form>
+
+            <div class="form-group qr-code-group hidden" id="qrCodeContainer">
+                <hr>
+                <label>Generated QR Code:</label>
+                <qr-code id="qrCodeOutput"
+                     module-color="#59743d"
+                     position-ring-color="#e2c277"
+                     position-center-color="#59743d"
+                     style="
+                        width: 300px;
+                        height: 300px;
+                        margin: 2em auto;
+                        background-color: #fff;
+                    "
+                >
+                    <img src="images/logo_simple.JPG" slot="icon"/>
+                </qr-code>
+                <button id="downloadQrBtn" class="qr-btn">Download QR Code</button>
+                <button id="printQrBtn" class="qr-btn">Print QR Code</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- @bitjson/qr-code library -->
+    <script src="https://unpkg.com/@bitjson/qr-code@1.0.2/dist/qr-code.js"></script>
+    <!-- Include html2canvas for capturing the full element -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Link to external JavaScript file -->
     <script src="../js/scripts.js"></script>
 
