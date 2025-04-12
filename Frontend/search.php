@@ -83,8 +83,16 @@ $categoryImages = [
     <section class="product-grid">
       <?php foreach ($results as $product): ?>
         <?php
+          $productId = $product['product_id'];
           $category = htmlspecialchars($product['product_category_name']);
-          $imagePath = $categoryImages[$category] ?? $categoryImages['Other'];
+          $customImagePath = "uploads/products/product_$productId.jpg";
+          
+          if (file_exists($customImagePath)) {
+              $imagePath = $customImagePath;
+          } else {
+              $imagePath = $categoryImages[$category] ?? $categoryImages['Other'];
+          }
+          
         ?>
         <div class="product-card">
           <img src="<?= $imagePath ?>" alt="<?= htmlspecialchars($product['product_name']) ?>">

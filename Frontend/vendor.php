@@ -2,51 +2,71 @@
 // Include tools.php for the addProduct function
 require_once '../tools.php';
 require_once '../db_config.php';
-
-$categories = getCategories();
+startSessionIfNeeded();
 
 // Handle AJAX request to add product
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-    $isJsonRequest = stripos($contentType, 'application/json') !== false;
+$categories = getCategories();
 
-    error_log("Is JSON Request: " . ($isJsonRequest ? 'Yes' : 'No'));
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_name'])) {
+    $response = ['success' => false];
 
-    if ($isJsonRequest) {
-        header('Content-Type: application/json');
+    $pdo = Database::getConnection();
+    $businessId = $_SESSION['user']['business_id'] ?? null;
 
-        // Get the POST data
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        // Debug: Log the received data
-        error_log("Received Data: " . print_r($data, true));
-
-        // Start session to get business ID
-        session_start();
-        $loggedInBusinessId = $_SESSION['user']['business_id'] ?? null;
-
-        if (!$loggedInBusinessId) {
-            echo json_encode(['success' => false, 'error' => 'No business ID provided']);
-            exit;
-        }
-
-        // Call the reusable addProduct function from tools.php
-        $result = addProduct($loggedInBusinessId, $data);
-
-        // Debug: Log the result
-        error_log("Result: " . print_r($result, true));
-
-        // Output the result
-        echo json_encode($result);
-        exit; // Ensure no further output
-    } else {
-        error_log("Not a JSON request, Content-Type: " . $contentType);
+    if (!$businessId) {
+        $response['error'] = "No business ID in session.";
+        echo json_encode($response);
+        exit;
     }
+
+    $name = $_POST['product_name'] ?? '';
+    $category = $_POST['product_category_name'] ?? '';
+    $price = $_POST['price'] ?? 0;
+    $weight = $_POST['weight'] ?? 0;
+    $description = $_POST['description'] ?? '';
+
+    // Insert product (no image in DB!)
+    $stmt = $pdo->prepare("
+        INSERT INTO product (
+            product_name, product_category_name, price, weight, description, product_business_id
+        ) VALUES (?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->execute([$name, $category, $price, $weight, $description, $businessId]);
+
+    $productId = $pdo->lastInsertId();
+
+    // Handle optional image
+    if (!empty($_FILES['product_image']['tmp_name'])) {
+        $ext = strtolower(pathinfo($_FILES['product_image']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
+
+        if (in_array($ext, $allowed)) {
+            $uploadDir = __DIR__ . "/uploads/products";
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $imagePath = $uploadDir . "/product_{$productId}." . $ext;
+
+            if (move_uploaded_file($_FILES['product_image']['tmp_name'], $imagePath)) {
+                error_log("✅ Image uploaded to: $imagePath");
+            } else {
+                error_log("❌ Failed to move image to $imagePath");
+            }
+        } else {
+            error_log("❌ Invalid file type: $ext");
+        }
+    }
+
+    echo json_encode(['success' => true, 'product_id' => $productId]);
+    exit;
 }
+
 
 include("header.php");
 
-$vendorId = $_SESSION['user']['business_id']
+$vendorId = $_SESSION['user']['business_id'];
 
 ?>
 
@@ -114,7 +134,7 @@ $vendorId = $_SESSION['user']['business_id']
         <div class="modal-content">
             <span class="close" onclick="closeModal('productModal')">×</span>
             <h2>Add New Product</h2>
-            <form id="productForm">
+            <form id="productForm" enctype="multipart/form-data" method="POST">
                 <div class="form-group">
                     <label for="productName">Product Name:</label>
                     <input type="text" id="productName" name="product_name" maxlength="100" required>
@@ -146,7 +166,10 @@ $vendorId = $_SESSION['user']['business_id']
                     <label for="description">Description (Max: 500 characters):</label>
                     <textarea id="description" name="description" rows="4" maxlength="500"></textarea>
                 </div>
-
+                <div class="form-group">
+                    <label for="productImage">Product Image (optional):</label>
+                    <input type="file" name="product_image" accept="image/*">
+                </div>
                 <button type="submit" class="submit-btn">Add Product</button>
             </form>
         </div>
