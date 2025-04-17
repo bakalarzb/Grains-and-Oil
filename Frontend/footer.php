@@ -4,7 +4,7 @@ include_once("subscribe.php");
 
 $message = '';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (isset($_POST['subscribe'])) {
 
     $message = addSubscriber($_POST['subscriber_email']);
 
@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p>Get the latest updates, special offers, and sustainability insights.</p>
             <form action="#" method="POST">
                 <input type="email" name ="subscriber_email" placeholder="Enter your email" required>
-                <button type="submit">Subscribe</button>
+                <button type="submit" name="subscribe">Subscribe</button>
             </form>
         </div>
 
