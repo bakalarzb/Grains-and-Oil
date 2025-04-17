@@ -18,11 +18,6 @@ $categoryImages = [
 ];
 ?>
 
-<section class="hero-marketplace">
-    <h1><?= $heroTitle ?></h1>
-    <p><?= $heroSubtitle ?></p>
-</section>
-
 <div class="filters">
     <button class="filter-btn">Filter</button>
     <button class="filter-btn">Filter</button>
