@@ -50,28 +50,35 @@
             </a>
         </div>
         <div class="profile-picture">
-            <a href="profile.php">
-            <?php
-            $avatarSeed = '';
-            $avatarUrl = 'images/user.jpg'; // Default
+        <?php
+        $avatarSeed = '';
+        $avatarUrl = 'images/user.jpg'; // Default
+        $profileLink = 'login.php'; // Default link if not logged in
 
-            if ($is_logged_in && isset($_SESSION['user'])) {
-                $user = $_SESSION['user'];
-                $avatarSeed = $_SESSION['isBusiness']
-                    ? ($user['business_name'] ?? 'business')
-                    : ($user['customer_username'] ?? 'user');
+        if ($is_logged_in && isset($_SESSION['user'])) {
+            $user = $_SESSION['user'];
+            $userType = $_SESSION['user_type'] ?? '';
 
-                $avatarUrl = "https://api.dicebear.com/7.x/initials/svg?seed=" . urlencode($avatarSeed);
+            if ($userType === 'admin') {
+                $profileLink = 'admin_dashboard.php';
+                $avatarSeed = $user['admin_first_name'] ?? 'Admin';
+            } elseif ($_SESSION['isBusiness'] ?? false) {
+                $profileLink = 'profile.php';
+                $avatarSeed = $user['business_name'] ?? 'Business';
+            } else {
+                $profileLink = 'profile.php';
+                $avatarSeed = $user['customer_username'] ?? 'Customer';
             }
-            ?>
 
-            <div class="profile-picture">
-                <a href="profile.php">
-                    <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                </a>
-            </div>
-            </a>
-        </div>
+            $avatarUrl = "https://api.dicebear.com/7.x/initials/svg?seed=" . urlencode($avatarSeed);
+        }
+        ?>
+
+        <a href="<?= htmlspecialchars($profileLink) ?>">
+            <img src="<?= htmlspecialchars($avatarUrl) ?>" alt="User Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+        </a>
+    </div>
+
 
         <!-- Conditionally display the logout button if the user is logged in -->
         <?php if ($is_logged_in === true): ?>

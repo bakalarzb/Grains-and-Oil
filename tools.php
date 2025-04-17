@@ -221,6 +221,32 @@ if (!function_exists('loginCustomer')) {
         return $customer;
     }
 }
+if (!function_exists('loginAdmin')) {
+    function loginAdmin($email, $password, $pdo) {
+        $stmt = $pdo->prepare("
+            SELECT a.admin_id, a.admin_email, a.admin_first_name, a.admin_last_name, al.admin_login_password
+            FROM admin a
+            INNER JOIN admin_login al ON a.admin_id = al.admin_id
+            WHERE a.admin_email = ?
+        ");
+        $stmt->execute([$email]);
+        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$admin) {
+            throw new Exception("Admin not found.");
+        }
+
+        // SIMPLE string comparison (because passwords are plain text now)
+        if ($password !== $admin['admin_login_password']) {
+            throw new Exception("Incorrect password.");
+        }
+
+        unset($admin['admin_login_password']);
+        return $admin;
+    }
+}
+
+
 
 /*
  * Starts the session if it hasn't been started yet.

@@ -1,85 +1,102 @@
 <?php
+// ====== [ edit_profile.php adapted for Admin editing customers/business ONLY ] ======
+
 session_start();
 require_once '../db_config.php';
 include_once("header.php");
 
 $pdo = Database::getConnection();
-$user_id = $_SESSION['user_id'] ?? null;
-$user_type = $_SESSION['user_type'] ?? null;
 
-if (!$user_id || !$user_type) {
+// Check login
+if (!isset($_SESSION['user_id'], $_SESSION['user_type'])) {
     echo "<p style='color:red;'>Unauthorized access.</p>";
     include("footer.php");
     exit;
 }
 
-$table = $user_type === 'business' ? 'business' : 'customer';
-$id_column = $user_type === 'business' ? 'business_id' : 'customer_id';
+$current_user_type = $_SESSION['user_type']; // 'customer', 'business', or 'admin'
+
+// If admin, get the user to edit from GET parameters
+if ($current_user_type === 'admin') {
+    $edit_id = $_GET['id'] ?? null;
+    $edit_type = $_GET['type'] ?? null; // 'customer' or 'business'
+
+    if (!$edit_id || !$edit_type || !in_array($edit_type, ['customer', 'business'])) {
+        echo "<p style='color:red;'>Invalid edit request.</p>";
+        include("footer.php");
+        exit;
+    }
+
+    $user_id = $edit_id;
+    $user_type = $edit_type;
+} else {
+    // Otherwise, user is editing themselves
+    $user_id = $_SESSION['user_id'];
+    $user_type = $current_user_type;
+}
+
+// Set table info
+$table = ($user_type === 'business') ? 'business' : 'customer';
+$id_column = ($user_type === 'business') ? 'business_id' : 'customer_id';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $fields = [];
     $params = [];
-
-    $password = $_POST['password'] ?? '';
-    $emailField = $user_type === 'business' ? 'business_email' : 'customer_email';
-    $email = $_POST[$emailField] ?? '';
 
     if ($user_type === 'business') {
         $fields = ['business_name', 'business_contact_email', 'business_description', 'business_postcode', 'business_email'];
         foreach ($fields as $field) {
             $params[] = $_POST[$field] ?? '';
         }
-
-        // If password is provided, hash it and add it
-        if (!empty($password)) {
-            $fields[] = 'password';
-            $params[] = password_hash($password, PASSWORD_DEFAULT);
-        }
-
     } else {
         $fields = ['customer_first_name', 'customer_last_name', 'customer_username', 'customer_postcode', 'customer_email'];
         foreach ($fields as $field) {
             $params[] = $_POST[$field] ?? '';
         }
-
-        if (!empty($password)) {
-            $fields[] = 'password';
-            $params[] = password_hash($password, PASSWORD_DEFAULT);
-        }
     }
-    if (!empty($_POST['password'])) {
-        $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    
-        // Get the login table name and ID column
-        $loginTable = $user_type === 'business' ? 'business_login' : 'customer_login';
-        $loginColumn = $user_type === 'business' ? 'business_login_id' : 'customer_login_id';
-        $passwordField = $user_type === 'business' ? 'business_login_password' : 'customer_login_password';
-    
-        // Update the password in the login table
-        $stmt = $pdo->prepare("UPDATE $loginTable SET $passwordField = ? WHERE $loginColumn = ?");
-        $stmt->execute([$hashedPassword, $user_id]);
-    }
-    
 
-    $set_clause = implode(", ", array_map(fn($f) => "$f = ?", $fields));
     $params[] = $user_id;
 
+    $set_clause = implode(", ", array_map(fn($f) => "$f = ?", $fields));
     $stmt = $pdo->prepare("UPDATE $table SET $set_clause WHERE $id_column = ?");
     $stmt->execute($params);
 
-    header("Location: profile.php");
+    // Handle password update if provided
+    if (!empty($_POST['password'])) {
+        $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+        $loginTable = ($user_type === 'business') ? 'business_login' : 'customer_login';
+        $loginColumn = ($user_type === 'business') ? 'business_login_id' : 'customer_login_id';
+        $passwordField = ($user_type === 'business') ? 'business_login_password' : 'customer_login_password';
+
+        $stmt = $pdo->prepare("UPDATE $loginTable SET $passwordField = ? WHERE $loginColumn = ?");
+        $stmt->execute([$hashedPassword, $user_id]);
+    }
+
+    // Redirect depending on who is logged in
+    if ($current_user_type === 'admin') {
+        header("Location: admin_dashboard.php");
+    } else {
+        header("Location: profile.php");
+    }
     exit;
 }
 
-
-// Fetch current user data
+// Fetch user data
 $stmt = $pdo->prepare("SELECT * FROM $table WHERE $id_column = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// If user not found
+if (!$user) {
+    echo "<p style='color:red;'>User not found.</p>";
+    include("footer.php");
+    exit;
+}
 ?>
 
 <div class="container mt-5 mb-5 px-4 py-4 rounded-4" style="background-color: #5d7944; color: white; max-width: 700px;">
-    <h2 class="text-center mb-4">Edit Your Profile</h2>
+    <h2 class="text-center mb-4">Edit User Profile</h2>
     <form method="POST">
 
         <?php if ($user_type === 'business'): ?>
@@ -101,14 +118,12 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
             </div>
             <div class="mb-3">
                 <label>Email Address</label>
-                <input type="email" class="form-control" name="business_email" 
-                    value="<?= htmlspecialchars($user['business_email']) ?>" required>
+                <input type="email" class="form-control" name="business_email" value="<?= htmlspecialchars($user['business_email']) ?>" required>
             </div>
             <div class="mb-3">
                 <label>Password (leave blank to keep current)</label>
                 <input type="password" class="form-control" name="password">
             </div>
-
         <?php else: ?>
             <div class="mb-3">
                 <label>First Name</label>
@@ -128,8 +143,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
             </div>
             <div class="mb-3">
                 <label>Email Address</label>
-                <input type="email" class="form-control" name="customer_email" 
-                    value="<?= htmlspecialchars($user['customer_email']) ?>" required>
+                <input type="email" class="form-control" name="customer_email" value="<?= htmlspecialchars($user['customer_email']) ?>" required>
             </div>
             <div class="mb-3">
                 <label>Password (leave blank to keep current)</label>
@@ -139,7 +153,12 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         <div class="form-actions d-flex justify-content-center mt-4 gap-3">
             <button type="submit" class="btn btn-success px-4 py-2 rounded-3 shadow-sm">Save Changes</button>
-            <a href="profile.php" class="btn btn-secondary px-4 py-2 rounded-3 shadow-sm">Cancel</a>
+
+            <?php if ($current_user_type === 'admin'): ?>
+                <a href="admin_dashboard.php" class="btn btn-secondary px-4 py-2 rounded-3 shadow-sm">Cancel</a>
+            <?php else: ?>
+                <a href="profile.php" class="btn btn-secondary px-4 py-2 rounded-3 shadow-sm">Cancel</a>
+            <?php endif; ?>
         </div>
     </form>
 </div>

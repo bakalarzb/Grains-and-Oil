@@ -19,8 +19,14 @@ $user_type = $_SESSION['user_type']; // 'customer' or 'business'
 // Fetch user data from the appropriate table
 if ($user_type === 'business') {
     $stmt = $pdo->prepare("SELECT * FROM business WHERE business_id = ?");
-} else {
+} elseif ($user_type === 'customer') {
     $stmt = $pdo->prepare("SELECT * FROM customer WHERE customer_id = ?");
+} elseif ($user_type === 'admin') {
+    $stmt = $pdo->prepare("SELECT * FROM admin WHERE admin_id = ?");
+} else {
+    echo "<p style='color:red; text-align:center;'>Invalid user type.</p>";
+    include("footer.php");
+    exit;
 }
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
