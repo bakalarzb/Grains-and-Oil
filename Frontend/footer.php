@@ -1,3 +1,19 @@
+<?php
+
+include_once("subscribe.php");
+
+$message = '';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $message = addSubscriber($_POST['subscriber_email']);
+
+    echo "<script>alert('$message');</script>";
+
+}
+
+?>
+
 <footer>
     <div class="footer-container">
         <div class="footer-section quick-links">
@@ -30,10 +46,11 @@
             <h3>Subscribe to Our Newsletter</h3>
             <p>Get the latest updates, special offers, and sustainability insights.</p>
             <form action="#" method="POST">
-                <input type="email" placeholder="Enter your email" required>
+                <input type="email" name ="subscriber_email" placeholder="Enter your email" required>
                 <button type="submit">Subscribe</button>
             </form>
         </div>
+
     </div>
 </footer>
 
