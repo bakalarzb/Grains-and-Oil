@@ -23,6 +23,7 @@ if (!function_exists('addSubscriber')) {
             return 'Subscribed!';
 
         }catch (Exception $e) {
+            $pdo->rollBack();
             return 'Subscription failed!';
         }
 
