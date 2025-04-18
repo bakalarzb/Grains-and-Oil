@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    /*
     // ---- Add Product Form Submission ----
     const productForm = document.getElementById("productForm");
     if (productForm) {
@@ -52,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
+    */
 
     // ---- QR Code Form ----
     const jsonForm = document.getElementById("jsonForm");

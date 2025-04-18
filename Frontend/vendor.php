@@ -19,51 +19,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_name'])) {
         exit;
     }
 
-    $name = $_POST['product_name'] ?? '';
-    $category = $_POST['product_category_name'] ?? '';
-    $price = $_POST['price'] ?? 0;
-    $weight = $_POST['weight'] ?? 0;
-    $description = $_POST['description'] ?? '';
+    // Add product using existing function
+    $productData = [
+        'product_category_name' => $_POST['product_category_name'],
+        'product_name' => $_POST['product_name'],
+        'price' => $_POST['price'],
+        'description' => $_POST['description'],
+        'weight' => $_POST['weight']
+    ];
 
-    // Insert product (no image in DB!)
-    $stmt = $pdo->prepare("
-        INSERT INTO product (
-            product_name, product_category_name, price, weight, description, product_business_id
-        ) VALUES (?, ?, ?, ?, ?, ?)
-    ");
-    $stmt->execute([$name, $category, $price, $weight, $description, $businessId]);
+    // Call addProduct function
+    $productResult = addProduct($businessId, $_POST);
 
-    $productId = $pdo->lastInsertId();
+    if (!$productResult['success']) {
+        echo json_encode(['success' => false, 'error' => $productResult['error']]);
+        exit;
+    }
 
-    // Handle optional image
-    if (!empty($_FILES['product_image']['tmp_name'])) {
-        $ext = strtolower(pathinfo($_FILES['product_image']['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
+    $productId = $productResult['product_id'];
 
-        if (in_array($ext, $allowed)) {
-            $uploadDir = __DIR__ . "/uploads/products";
-
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-
-            $imagePath = $uploadDir . "/product_{$productId}." . $ext;
-
-            if (move_uploaded_file($_FILES['product_image']['tmp_name'], $imagePath)) {
-                error_log("✅ Image uploaded to: $imagePath");
-            } else {
-                error_log("❌ Failed to move image to $imagePath");
-            }
-        } else {
-            error_log("❌ Invalid file type: $ext");
-        }
+    // ✅ Save image(s) if any were uploaded
+    if (!empty($_FILES['product_images'])) {
+        saveProductImages($productId, $_FILES['product_images']);
     }
 
     echo json_encode(['success' => true, 'product_id' => $productId]);
-    exit;
 }
 
-
+// Fallback to show page normally
 include("header.php");
 
 $vendorId = $_SESSION['user']['business_id'];
@@ -168,7 +151,7 @@ $vendorId = $_SESSION['user']['business_id'];
                 </div>
                 <div class="form-group">
                     <label for="productImage">Product Image (optional):</label>
-                    <input type="file" name="product_image" accept="image/*">
+                    <input type="file" name="product_images[]" accept="image/*">
                 </div>
                 <button type="submit" class="submit-btn">Add Product</button>
             </form>

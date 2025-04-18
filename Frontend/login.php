@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 require_once '../tools.php'; // Include the tools with login functions

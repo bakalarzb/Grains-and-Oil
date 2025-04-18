@@ -11,6 +11,9 @@ require_once 'db_config.php';
 /*
 *** Logic to create business accounts ***
 */
+/*
+*** Logic to create business accounts ***
+*/
 if (!function_exists('createBusinessLoginRecord')) {
     function createBusinessLoginRecord($password, $pdo) {
         // Hash the password securely
@@ -312,6 +315,64 @@ if (!function_exists('addProduct')) {
     }
 }
 
+if (!function_exists('saveProductImages')) {
+    function saveProductImages(int $productId, array $imageFiles): array
+    {
+        $pdo = Database::getConnection();
+        $savedPaths = [];
+        $uploadDir = __DIR__ . "/uploads/products/";
+
+        if (!is_dir($uploadDir)) {
+            if (!mkdir($uploadDir, 0777, true)) {
+                error_log("❌ Failed to create upload directory: $uploadDir");
+                return [];
+            }
+        }
+
+        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
+
+        foreach ($imageFiles['tmp_name'] as $index => $tmpPath) {
+            $originalName = $imageFiles['name'][$index];
+            $errorCode = $imageFiles['error'][$index];
+
+            if ($errorCode !== UPLOAD_ERR_OK) {
+                error_log("❌ Upload error on file '$originalName': Code $errorCode");
+                continue;
+            }
+
+            $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+            if (!in_array($ext, $allowed)) {
+                error_log("❌ File extension '$ext' not allowed for file '$originalName'");
+                continue;
+            }
+
+            $uniqueName = uniqid("product{$productId}_") . '.' . $ext;
+            $relativePath = "uploads/products/" . $uniqueName;
+            $fullPath = __DIR__ . "/" . $relativePath;
+
+            if (!move_uploaded_file($tmpPath, $fullPath)) {
+                error_log("❌ Failed to move uploaded file '$originalName' to '$fullPath'");
+                continue;
+            }
+
+            try {
+                $stmt = $pdo->prepare("INSERT INTO product_image (product_id, image_path) VALUES (:pid, :path)");
+                $stmt->execute([
+                    'pid' => $productId,
+                    'path' => $relativePath
+                ]);
+                $savedPaths[] = $relativePath;
+                error_log("✅ Image '$originalName' saved and database entry created.");
+            } catch (PDOException $e) {
+                error_log("❌ Database error while saving image path for '$originalName': " . $e->getMessage());
+            }
+        }
+
+        return $savedPaths;
+    }
+}
+
+
 /**
  * Fetch all categories from the category table.
  *
@@ -334,6 +395,22 @@ if (!function_exists('getCategories')) {
             return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             // Handle database connection errors
+            die("Database error: " . $e->getMessage());
+        }
+    }
+}
+
+if (!function_exists('getImage')) {
+    function getImage($productId)
+    {
+        try {
+            $pdo = Database::getConnection();
+
+            $stmt = $pdo->prepare("SELECT image_path FROM product_image WHERE product_id = :pid");
+            $stmt->execute(['pid' => $productId]);
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
             die("Database error: " . $e->getMessage());
         }
     }
