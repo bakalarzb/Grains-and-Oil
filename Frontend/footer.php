@@ -1,8 +1,47 @@
 <?php
 
-include_once("subscribe.php");
+require_once '../db_config.php'; // Include the database connection
 
 $message = '';
+
+/**
+ * Add Subscriber to database
+ *
+ * This function checks to see if the entered email is already present in the database.
+ * It returns a message for an alert if already present, otherwise it adds the email
+ * and returns a success.
+ * Terminates and rollsback on an error, returning a failure notification.
+ *
+ * @return string A message declaring success/failure or otherwise of query.
+ */
+if (!function_exists('addSubscriber')) {
+    function addSubscriber($email) {
+
+        $pdo = Database::getConnection();
+
+        try{
+
+            // Check if email exists already
+            $stmt = $pdo -> prepare('SELECT * FROM subscribers WHERE subscriber_email = ?');
+            $stmt -> execute([ $email ]);
+            if ($stmt -> fetch(PDO::FETCH_ASSOC)) {
+                return('Already subscribed!');
+            }
+
+            // Insert email into database
+            $stmt = $pdo -> prepare('INSERT INTO subscribers (subscriber_email) VALUES (?)');
+            $stmt -> execute([ $email]);
+
+            return 'Subscribed!';
+
+        }catch (Exception $e) {
+            $pdo->rollBack();
+            return 'Subscription failed!';
+        }
+
+    }
+
+}
 
 if (isset($_POST['subscribe'])) {
 
