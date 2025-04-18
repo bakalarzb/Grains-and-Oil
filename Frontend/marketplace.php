@@ -18,11 +18,6 @@ $categoryImages = [
 ];
 ?>
 
-<section class="hero-marketplace">
-    <h1><?= $heroTitle ?></h1>
-    <p><?= $heroSubtitle ?></p>
-</section>
-
 <div class="filters">
     <button class="filter-btn">Filter</button>
     <button class="filter-btn">Filter</button>
@@ -39,30 +34,20 @@ $categoryImages = [
 <section class="product-grid">
     <?php foreach ($products as $product): ?>
         <div class="product-card">
-           <?php
+            <?php
             $productId = $product['product_id'];
             $category = htmlspecialchars($product['product_category_name']);
-            $imagePath = '';  // Final path to use
+            $images = getImage($productId);  // Should return an array
 
-            $extensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
-            $found = false;
-
-            foreach ($extensions as $ext) {
-                $path = "uploads/products/product_{$productId}.{$ext}";
-                if (file_exists($path)) {
-                    $imagePath = $path;
-                    $found = true;
-                    break;
-                }
-            }
-
-            if (!$found) {
+            if (!empty($images)) {
+                $imagePath = $images[0]['image_path'];
+            } else {
                 $imagePath = $categoryImages[$category] ?? $categoryImages['Other'];
             }
+
             ?>
 
-
-            <img src="<?= htmlspecialchars($imagePath) ?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
+            <img src="../<?=$imagePath?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
             <h3><?= htmlspecialchars($product['product_name']) ?></h3>
             <p><?= htmlspecialchars($product['description']) ?></p>
             <p class="price">£<?= number_format($product['price'], 2) ?>/kg</p>
