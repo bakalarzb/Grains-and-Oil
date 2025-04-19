@@ -1,5 +1,9 @@
 <?php
 require_once 'db_config.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'vendor/autoload.php';
 
 /**
  * This file contains utility functions.
@@ -8,9 +12,6 @@ require_once 'db_config.php';
  * Functions are wrapped in existence checks to avoid redefinition errors.
  */
 
-/*
-*** Logic to create business accounts ***
-*/
 /*
 *** Logic to create business accounts ***
 */
@@ -439,5 +440,214 @@ if (!function_exists('getAllProducts')) {
             // Handle database errors
             die("Database error: " . $e->getMessage());
         }
+    }
+}
+
+/**
+ * Generates a secure random token for password reset.
+ *
+ * @return string A 64-character hexadecimal string (32 bytes of entropy).
+ */
+if (!function_exists('generateToken')) {
+    function generateToken()
+    {
+        return bin2hex(random_bytes(32));
+    }
+}
+
+/**
+ * Checks both business and customer tables for a given email address.
+ *
+ * If the email exists in one table, returns the user and type.
+ * If the email exists in both, returns a special signal to prompt the user to choose.
+ *
+ * @param string $email The email address to search for.
+ * @return array|false|int Returns user info + type, false if not found, or 2 if found in both.
+ */
+if (!function_exists('findUserByEmail')) {
+    function findUserByEmail($email)
+    {
+        global $pdo;
+
+        $foundIn = [];
+
+        // Check business
+        $stmt = $pdo->prepare("SELECT * FROM business WHERE business_email = ?");
+        $stmt->execute([$email]);
+        if ($stmt->rowCount() > 0) {
+            $foundIn['business'] = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        // Check customer
+        $stmt = $pdo->prepare("SELECT * FROM customer WHERE customer_email = ?");
+        $stmt->execute([$email]);
+        if ($stmt->rowCount() > 0) {
+            $foundIn['customer'] = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        if (count($foundIn) === 0) {
+            return false;
+        } elseif (count($foundIn) === 2) {
+            return 2; // Signal to prompt for account type
+        } elseif (isset($foundIn['business'])) {
+            return ['user' => $foundIn['business'], 'type' => 'business'];
+        } else {
+            return ['user' => $foundIn['customer'], 'type' => 'customer'];
+        }
+    }
+}
+
+/**
+ * Stores the password reset token with optional user type.
+ *
+ * @param string $email
+ * @param string $token
+ * @param string $type 'customer' or 'business'
+ */
+if (!function_exists('storeResetToken')) {
+    function storeResetToken($email, $token, $type)
+    {
+        global $pdo;
+        $stmt = $pdo->prepare("INSERT INTO password_resets (email, token, type, created_at) VALUES (?, ?, ?, NOW())");
+        $stmt->execute([$email, $token, $type]);
+    }
+}
+
+/**
+ * Sends a password reset email using PHPMailer via Gmail SMTP.
+ *
+ * @param string $email The recipient's email address.
+ * @param string $token The reset token.
+ * @param string $type The account type (e.g., 'customer' or 'business').
+ *
+ * To enable the forgot password function you must first create an app password
+ * for your chosen email and put it into this function along with your chosen
+ * email next to the relevant variables.
+ *
+ * The reset link domain must be changed according to your needs.
+ */
+if (!function_exists('sendResetEmail')) {
+    function sendResetEmail($email, $token, $type)
+    {
+        $resetLink = "http://localhost/grainsandoil/frontend/reset_password.php?token=" . urlencode($token) . "&type=" . urlencode($type);
+
+        $mail = new PHPMailer(true);
+
+        try {
+            // Server settings
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'youremail@gmail.com'; // Your Gmail address
+            $mail->Password = 'your app password'; // App-specific password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            // Recipients
+            $mail->setFrom('youremail@gmail.com', 'GrainsAndOil');
+            $mail->addAddress($email);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Password Reset Request';
+            $mail->Body = "
+            <html>
+            <body>
+                <p>Hello,</p>
+                <p>You requested a password reset for your <strong>$type</strong> account.</p>
+                <p>Click the link below to choose a new password:</p>
+                <p><a href='$resetLink'>$resetLink</a></p>
+                <p>This link will expire in 1 hour.</p>
+                <p>If you did not request this, you can safely ignore this email.</p>
+            </body>
+            </html>
+        ";
+
+            $mail->send();
+            // echo 'Message has been sent';
+        } catch (Exception $e) {
+            error_log("Reset email could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        }
+    }
+}
+
+/**
+ * Validates a password reset token.
+ *
+ * @param string $token The reset token.
+ * @param PDO $pdo The PDO database connection.
+ * @return array|false Returns the reset request row if valid, or false if invalid or expired.
+ */
+if (!function_exists('validateResetToken')) {
+    function validateResetToken(string $token, PDO $pdo)
+    {
+        $stmt = $pdo->prepare("
+        SELECT * FROM password_resets 
+        WHERE token = ? 
+        AND created_at > (NOW() - INTERVAL 1 HOUR)
+    ");
+        $stmt->execute([$token]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+}
+
+/**
+ * Updates the user's password in the appropriate login table
+ * (customer_login or business_login), based on the provided email and account type.
+ *
+ * @param string $email        The email of the account owner.
+ * @param string $newPassword  The new hashed password.
+ * @param string $type         The account type: 'customer' or 'business'.
+ * @param PDO    $pdo          The database connection.
+ *
+ * @return bool True on success, false on failure.
+ */
+if (!function_exists('updatePassword')) {
+    function updatePassword($email, $newPassword, $type, $pdo) {
+
+        if ($type === 'customer') {
+            // Get customerID
+            $stmt = $pdo->prepare("SELECT customer_id FROM customer WHERE customer_email = ?");
+            $stmt->execute([$email]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$result) return false;
+
+            $id = $result['customer_id'];
+
+            // Update password in customer_login
+            $update = $pdo->prepare("UPDATE customer_login SET customer_login_password = ? WHERE customer_login_id = ?");
+            return $update->execute([$newPassword, $id]);
+
+        } else {
+            // Get businessID
+            $stmt = $pdo->prepare("SELECT business_id FROM business WHERE business_email = ?");
+            $stmt->execute([$email]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$result) return false;
+
+            $id = $result['business_id'];
+
+            // Update password in business_login
+            $update = $pdo->prepare("UPDATE business_login SET business_login_password = ? WHERE business_login_id = ?");
+            return $update->execute([$newPassword, $id]);
+        }
+    }
+}
+
+/**
+ * Deletes a password reset token from the database.
+ *
+ * @param string $token The reset token to delete.
+ * @param PDO $pdo The PDO database connection.
+ * @return bool Returns true if the token was deleted, false otherwise.
+ */
+if (!function_exists('deleteResetToken')) {
+    function deleteResetToken(string $token, PDO $pdo): bool
+    {
+        $stmt = $pdo->prepare("DELETE FROM password_resets WHERE token = ?");
+        return $stmt->execute([$token]);
     }
 }
