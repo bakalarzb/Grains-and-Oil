@@ -1,17 +1,39 @@
 <?php
 session_start();
 require_once '../db_config.php';
+require_once '../tools.php';
 include("header.php");
 
 $pdo = Database::getConnection();
 $message = '';
+$showTypeChoice = false;
+$email = '';
+$selectedType = '';
 
+// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
+    $selectedType = $_POST['user_type'] ?? '';
 
-    // Optional: You can check if this email exists in customer or business
-    // For now, just show generic message
-    $message = "If an account with that email exists, a reset link has been sent.";
+    $result = findUserByEmail($email);
+
+    if ($result === false) {
+        // Email not found — show generic message
+        $message = "If an account with that email exists, a reset link has been sent.";
+    } elseif ($result === 2 && !$selectedType) {
+        // Found in both — show account type choice
+        $showTypeChoice = true;
+    } else {
+        // Either a single match or user already selected type
+        $user = is_array($result) ? $result['user'] : null;
+        $type = $selectedType ?: $result['type'];
+
+        $token = generateToken();
+        storeResetToken($email, $token, $type);  // Optional: store type with token
+        sendResetEmail($email, $token, $type);
+
+        $message = "If an account with that email exists, a reset link has been sent.";
+    }
 }
 ?>
 
@@ -24,22 +46,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="alert alert-success text-center"><?= $message ?></div>
         <?php endif; ?>
 
-        <form method="POST" action="">
-            <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
-                <input 
-                    type="email" 
-                    class="form-control" 
-                    id="email" 
-                    name="email" 
-                    placeholder="example@domain.com" 
-                    required>
-            </div>
+        <?php if ($showTypeChoice): ?>
+            <form method="POST" action="">
+                <input type="hidden" name="email" value="<?= htmlspecialchars($email) ?>">
 
-            <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-success px-4">Send Reset Link</button>
-            </div>
-        </form>
+                <div class="mb-3">
+                    <label for="user_type" class="form-label">Choose Account Type</label>
+                    <select class="form-select" name="user_type" id="user_type" required>
+                        <option value="">-- Select an option --</option>
+                        <option value="customer">Customer</option>
+                        <option value="business">Business</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary px-4">Continue</button>
+                </div>
+            </form>
+        <?php else: ?>
+            <form method="POST" action="">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            value="<?= htmlspecialchars($email) ?>"
+                            placeholder="example@domain.com"
+                            required>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-success px-4">Send Reset Link</button>
+                </div>
+            </form>
+        <?php endif; ?>
 
         <div class="text-center mt-3">
             <a href="login.php" class="text-muted">Back to Login</a>

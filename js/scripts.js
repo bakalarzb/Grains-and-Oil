@@ -165,18 +165,27 @@ function closeModal(id) {
     }
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    // Example of password strength check
+    const passwordInput = document.getElementById("password");
 
+    passwordInput.addEventListener("input", function () {
+        const password = passwordInput.value;
+        const strengthIndicator = document.getElementById("password-strength");
 
-
-
-
-
-
-
-
-
-
-
+        // Simple password strength check: Add more complex logic here
+        if (password.length < 6) {
+            strengthIndicator.textContent = "Weak";
+            strengthIndicator.style.color = "red";
+        } else if (password.length < 12) {
+            strengthIndicator.textContent = "Medium";
+            strengthIndicator.style.color = "orange";
+        } else {
+            strengthIndicator.textContent = "Strong";
+            strengthIndicator.style.color = "green";
+        }
+    });
+});
 
 // document.addEventListener('DOMContentLoaded', function() {
 //     const productForm = document.getElementById('productForm');
