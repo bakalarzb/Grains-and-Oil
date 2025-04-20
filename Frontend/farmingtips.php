@@ -1,10 +1,3 @@
-<!-- (place before the (<php) This Code is just for inputing your own CCS File, Can be removed on submit START --> 
-<style>
-<?php include 'CSS/fishy.css'; ?>
-</style>
-<!-- END -->
-
-
 <?php
 $heroTitle = "10 Sustainable Farming Practices and Why They Matter";
 $heroClass = "hero-article";
