@@ -19,34 +19,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_name'])) {
         exit;
     }
 
-    // Add product using existing function
-    $productData = [
-        'product_category_name' => $_POST['product_category_name'],
-        'product_name' => $_POST['product_name'],
-        'price' => $_POST['price'],
-        'description' => $_POST['description'],
-        'weight' => $_POST['weight']
-    ];
+    $name = $_POST['product_name'] ?? '';
+    $category = $_POST['product_category_name'] ?? '';
+    $price = $_POST['price'] ?? 0;
+    $weight = $_POST['weight'] ?? 0;
+    $description = $_POST['description'] ?? '';
 
-    // Call addProduct function
-    $productResult = addProduct($businessId, $_POST);
+    // Insert product (no image in DB!)
+    $stmt = $pdo->prepare("
+        INSERT INTO product (
+            product_name, product_category_name, price, weight, description, product_business_id
+        ) VALUES (?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->execute([$name, $category, $price, $weight, $description, $businessId]);
 
-    if (!$productResult['success']) {
-        echo json_encode(['success' => false, 'error' => $productResult['error']]);
-        exit;
-    }
+    $productId = $pdo->lastInsertId();
 
-    $productId = $productResult['product_id'];
+    // Handle optional image
+    if (!empty($_FILES['product_image']['tmp_name'])) {
+        $ext = strtolower(pathinfo($_FILES['product_image']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
 
-    // ✅ Save image(s) if any were uploaded
-    if (!empty($_FILES['product_images'])) {
-        saveProductImages($productId, $_FILES['product_images']);
+        if (in_array($ext, $allowed)) {
+            $uploadDir = __DIR__ . "/uploads/products";
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $imagePath = $uploadDir . "/product_{$productId}." . $ext;
+
+            if (move_uploaded_file($_FILES['product_image']['tmp_name'], $imagePath)) {
+                error_log("✅ Image uploaded to: $imagePath");
+            } else {
+                error_log("❌ Failed to move image to $imagePath");
+            }
+        } else {
+            error_log("❌ Invalid file type: $ext");
+        }
     }
 
     echo json_encode(['success' => true, 'product_id' => $productId]);
+    exit;
 }
 
-// Fallback to show page normally
+
 include("header.php");
 
 $vendorId = $_SESSION['user']['business_id'];
@@ -81,7 +98,7 @@ $vendorId = $_SESSION['user']['business_id'];
                                 <i class="fa-solid fa-pen-to-square fa-2x mb-3"></i>
                                 <h3>Manage Listings</h3>
                                 <p>View, update, or remove existing product listings with ease.</p>
-                                <a href="#" class="dashboard-btn mt-2">View Listings</a>
+                                <a href="listings.php" class="dashboard-btn mt-2">View Listings</a>
                             </div>
                         </div>
                     </div>
@@ -93,7 +110,7 @@ $vendorId = $_SESSION['user']['business_id'];
                                 <i class="fa-solid fa-chart-line fa-2x mb-3"></i>
                                 <h3>Sales & Analytics</h3>
                                 <p>Track your performance, orders, and get insights on buyer activity.</p>
-                                <a href="#" class="dashboard-btn mt-2">View Dashboard</a>
+                                <a href="analytics.php" class="dashboard-btn mt-2">View Dashboard</a>
                             </div>
                         </div>
 
@@ -151,7 +168,7 @@ $vendorId = $_SESSION['user']['business_id'];
                 </div>
                 <div class="form-group">
                     <label for="productImage">Product Image (optional):</label>
-                    <input type="file" name="product_images[]" accept="image/*">
+                    <input type="file" name="product_image" accept="image/*">
                 </div>
                 <button type="submit" class="submit-btn">Add Product</button>
             </form>
