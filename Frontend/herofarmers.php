@@ -1,9 +1,3 @@
-<!-- (place before the (<php) This Code is just for inputing your own CCS File, Can be removed on submit START --> 
-<style>
-<?php include 'CSS/fishy.css'; ?>
-</style>
-<!-- END -->
-
 <?php
 $heroTitle = "Meet Our Farmers";
 $heroClass = "hero-article3";
