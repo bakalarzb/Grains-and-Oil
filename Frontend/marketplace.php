@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 $heroTitle = "FIRST GRADE GOODIES!";
 $heroClass = "hero-marketplace";
 $heroSubtitle = "Where Community Meets Sustainability, One Seed at a Time.";
@@ -49,7 +52,6 @@ $categoryImages = [
 
             <img src="../<?=$imagePath?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
             <h3><?= htmlspecialchars($product['product_name']) ?></h3>
-            <p><?= htmlspecialchars($product['description']) ?></p>
             <p class="price">£<?= number_format($product['price'], 2) ?>/kg</p>
 
             <form method="POST" action="add_to_cart.php">
