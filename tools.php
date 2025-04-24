@@ -444,6 +444,34 @@ if (!function_exists('getAllProducts')) {
 }
 
 /**
+ * Fetch all products from the product table from a specific business.
+ *
+ * This function retrieves all records from the 'product' table whose business id matches.
+ * It returns an associative array containing product details or
+ * terminates the script if a database error occurs.
+ *
+ * @return array An array of the business' products with their details.
+ */
+if (!function_exists('getBusinessProducts')) {
+    function getBusinessProducts($businessID) {
+        try {
+            $pdo = Database::getConnection(); // Get database connection.
+            
+
+            // Fetch all records from the product table with matching business id.
+            $query = $pdo -> prepare('SELECT * FROM product WHERE product_business_id = ?');
+            $query->execute([$businessID]);
+
+            // Return all product records as an associative array.
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Handle database errors
+            die("Database error: " . $e->getMessage());
+        }
+    }
+}
+
+/**
  * Generates a secure random token for password reset.
  *
  * @return string A 64-character hexadecimal string (32 bytes of entropy).
