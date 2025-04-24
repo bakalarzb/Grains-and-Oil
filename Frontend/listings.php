@@ -18,6 +18,51 @@ $categoryImages = [
     'Other' => 'images/other.jpg'
 ];
 
+require_once '../db_config.php'; // Include the database connection
+
+$message = '';
+
+/**
+ * Add Subscriber to database
+ *
+ * This function checks to see if the entered email is already present in the database.
+ * It returns a message for an alert if already present, otherwise it adds the email
+ * and returns a success.
+ * Terminates and rollsback on an error, returning a failure notification.
+ *
+ * @return string A message declaring success/failure or otherwise of query.
+ */
+if (!function_exists('deleteListing')) {
+    function deleteListing($productId) {
+
+        $pdo = Database::getConnection();
+
+        try{
+
+            // Check if email exists already
+            $stmt = $pdo -> prepare('DELETE FROM product WHERE product_id = ?');
+            $stmt -> execute([ $productId ]);
+
+            return htmlspecialchars($productId);
+
+        }catch (Exception $e) {
+            $pdo->rollBack();
+            return 'Deletion failed!';
+        }
+
+    }
+
+}
+
+if (isset($_POST['delete'])) {
+
+    $message = deleteListing(htmlspecialchars($_POST['id']));
+
+    echo "<script>alert('$message');</script>";
+    header("refresh: 0");
+
+}
+
 ?>
 
 <!-- Header Section -->
@@ -66,11 +111,12 @@ $categoryImages = [
                     <textarea id="product_one" name="product_one" class="description-field" placeholder="Describe your product..."><?= htmlspecialchars($product['product_name']) ?></textarea>
                 </div>
             </div>
-            <div class="product-actions">
-                <button class="action-btn edit-btn"><i class="fas fa-pen"></i> Edit Details</button>
-                <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Remove</button>
-                <button class="action-btn save-btn"><i class="fas fa-save"></i> Save</button>
-            </div>
+            <form class="product-actions" method="post" action="">
+                <button name="edit_btn" class="action-btn edit-btn"><i class="fas fa-pen"></i> Edit Details</button>
+                <button name="delete" class="action-btn delete-btn"><i class="fas fa-trash"></i> Remove</button>
+                <button name="save" class="action-btn save-btn"><i class="fas fa-save"></i> Save</button>
+                <input type="hidden" id="id" name="id" value="<?php echo $product['product_id']; ?>" />
+            </form>
         </div>
         <!-- Product edit card 1 END -->
         <?php endforeach; ?>
