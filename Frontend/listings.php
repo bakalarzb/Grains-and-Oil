@@ -63,7 +63,7 @@ $categoryImages = [
                 </div>
                 <div class="product-description">
                     <label for="product_one" class="description-label">Product Description</label>
-                    <textarea id="product_one" name="product_one" class="description-field" placeholder="Describe your product...">Rice freshly grown</textarea>
+                    <textarea id="product_one" name="product_one" class="description-field" placeholder="Describe your product..."><?= htmlspecialchars($product['product_name']) ?></textarea>
                 </div>
             </div>
             <div class="product-actions">
