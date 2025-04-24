@@ -43,7 +43,7 @@ if (!function_exists('deleteListing')) {
             $stmt = $pdo -> prepare('DELETE FROM product WHERE product_id = ?');
             $stmt -> execute([ $productId ]);
 
-            return htmlspecialchars($productId);
+            return 'Product Deleted!';
 
         }catch (Exception $e) {
             $pdo->rollBack();
