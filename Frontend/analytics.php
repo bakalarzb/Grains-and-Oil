@@ -84,7 +84,7 @@ if (!function_exists('getTotalOrderCount')) {
  * It returns the total weight of goods sold by the business.
  * Terminates and rollsback on an error, returning a 0.
  *
- * @return string A message declaring success/failure of query.
+ * @return string A string with the weight of goods to display or 0 on failure.
  */
 if (!function_exists('getTotalWeightOfSales')) {
   function getTotalWeightOfSales() {
@@ -111,35 +111,6 @@ if (!function_exists('getTotalWeightOfSales')) {
           return '0.0';
         }
   };
-}
-
-/**
- * Add Contact Request to database
- *
- * This function adds the contact information and request of communication to the database.
- * It returns a message for an alert notifying of a success or failure.
- * Terminates and rollsback on an error, returning a failure notification.
- *
- * @return string A message declaring success/failure of query.
- */
-if (!function_exists('addContact')) {
-  function addContact($name, $email, $subject, $message) {
-
-    $pdo = Database::getConnection();
-
-      try{
-
-        // Insert contact us form into database.
-        $stmt = $pdo -> prepare('INSERT INTO contact_us (contact_us_email, contact_us_subject, contact_us_text, contact_us_name) VALUES (?, ?, ?, ?)');
-        $stmt -> execute([ $email, $subject, $message, $name]);
-        return 'Your request has been send!';
-
-      } catch (Exception $e) {
-        //Rollback on failure.
-          $pdo->rollBack();
-          return 'Your request has failed!';
-        }
-  }
 }
 
 ?>
