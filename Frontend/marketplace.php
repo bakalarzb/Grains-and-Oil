@@ -50,7 +50,7 @@ $categoryImages = [
 
             ?>
 
-            <img src="../<?=$imagePath?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
+            <img src="<?=$imagePath?>" alt="<?= htmlspecialchars($product['product_name']) ?>">
             <h3><?= htmlspecialchars($product['product_name']) ?></h3>
             <p class="price">£<?= number_format($product['price'], 2) ?>/kg</p>
 
