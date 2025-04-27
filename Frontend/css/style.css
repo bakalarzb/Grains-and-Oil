@@ -866,18 +866,86 @@ footer {
 /* Filters */
 .filters {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
     padding: 20px;
+    position: relative;
+    gap: 5px;
+}
+
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
 }
 
 .filter-btn, .filter-dropdown {
     background: #8b6f40;
     color: white;
     border: none;
-    padding: 10px 15px;
-    margin: 5px;
-    border-radius: 15px;
+    padding: 8px 15px 8px 12px;
+    margin: 0;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.filter-btn {
+    position: relative;
+    padding-right: 25px;
+}
+
+.filter-btn::after {
+
+    position: absolute;
+    right: 10px;
+    font-size: 16px;
+}
+
+.filter-btn:hover {
+    background: #7a6236;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    background-color: #f9f9f9;
+    min-width: 120px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .filter-dropdown {
+    background-color: #7a6236;
 }
 
 /* Product Grid */
