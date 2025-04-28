@@ -23,6 +23,107 @@ $customerUsers = $customerStmt->fetchAll(PDO::FETCH_ASSOC);
 include("header.php");
 ?>
 
+<style>
+    body {
+        font-family: 'Karla', sans-serif;
+        background-color: #f5f5f5;
+        color: #242423;
+        padding: 20px;
+    }
+
+    a {
+    color: white;
+    text-decoration: none;
+}
+
+    a:hover, a:focus {
+    color: #e2c277; /* Optional: Yellow accent on hover */
+    text-decoration: underline;
+}
+
+    h1 {
+        font-family: 'Julius Sans One', sans-serif;
+        color: #59743d;
+    }
+
+    h2 {
+        font-family: 'Kodchasan', sans-serif;
+        color: #836533;
+        margin-top: 40px;
+        margin-bottom: 20px;
+    }
+
+    .btn-success {
+        background-color: #59743d;
+        border-color: #59743d;
+        font-family: 'Karla', sans-serif;
+    }
+
+    .btn-success:hover {
+        background-color: #486130;
+        border-color: #486130;
+    }
+
+    .btn-primary {
+        background-color: #836533;
+        border-color: #836533;
+    }
+
+    .btn-primary:hover {
+        background-color: #6a4d27;
+        border-color: #6a4d27;
+    }
+
+    .btn-danger {
+        background-color: #e2c277;
+        color: #242423;
+        border-color: #e2c277;
+    }
+
+    .btn-danger:hover {
+        background-color: #d4b466;
+        border-color: #d4b466;
+        color: #000;
+    }
+
+    .table-bordered {
+        border: 2px solid #836533;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 12px;
+    }
+
+    .table thead.table-dark {
+        background-color: #242423;
+        color: #fff;
+        font-family: 'Kodchasan', sans-serif;
+        font-size: 1rem;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f3f1ea;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .text-end .btn {
+        font-size: 1rem;
+        padding: 8px 16px;
+    }
+
+    .container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+</style>
+
 <div class="container mt-5">
     <h1 class="text-center mb-4">Admin Dashboard</h1>
 
