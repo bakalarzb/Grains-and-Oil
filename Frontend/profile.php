@@ -74,7 +74,7 @@ if (!$user) {
                 <?php if ($user_type === 'customer'): ?>
                     <a href="order_history.php" class="btn btn-info">Order History</a>
                 <?php else: ?>
-                    <a href="view-dashboard.php" class="btn btn-info">View Dashboard</a>
+                    <a href="analytics.php" class="btn btn-info">View Dashboard</a>
                 <?php endif; ?>
                 <a href="delete_profile.php" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">Delete Account</a>
             </div>
