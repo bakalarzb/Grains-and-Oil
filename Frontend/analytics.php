@@ -6,111 +6,63 @@ $heroSubtitle = "Track your performance, orders, and get insights on buyer activ
 include("header.php");
 
 /**
- * Get the sales revenue of a business from order table.
+ * Perform the queries for each statistic and return them for displaying.
  *
- * This function retrieves the sum of the price * the amount ordered for each order of a business's product.
- * It then returns the total value of the sales.
- * Terminates and rollsback on an error, returning 0.
+ * This function retrieves the count for the number of products sold, total weight of goods sold, and total revenue from sales for a business.
+ * It then returns an array with each needed value in a seperate column.
+ * Terminates and rollsback on an error, returning an array of 0 values.
  *
- * @return string The total value of sales.
+ * @return array [0] - The weight of food sold. [1] - The revenue. [2] - The number of orders.
  */
-if (!function_exists('getSalesRevenue')) {
-  function getSalesRevenue() {
+if (!function_exists('getAnalytics')) {
+  function getAnalytics() {
 
     $businessId = $_SESSION['user']['business_id'] ?? null;
 
     if (!$businessId) {
-        return '0.00';
+        return [0,0,0];
     }
 
     $pdo = Database::getConnection();
 
       try{
 
-        // Select amount * price of all products sold by business.
-        $stmt = $pdo -> prepare('SELECT SUM(price_per_unit * product_order_quantity) AS "sum" FROM product_order INNER JOIN product ON product_order.product_order_product_id = product.product_id WHERE product_business_id = ? GROUP BY product_business_id;');
+        // Select sum of revenue, count of orders, and sum of weight from orders where the business id matches.
+        $stmt = $pdo -> prepare('SELECT SUM(price_per_unit * product_order_quantity) AS "revenue", COUNT(product_order.product_order_product_id) AS "orders", SUM(product.weight * product_order.product_order_quantity) AS "totalweight" FROM product_order INNER JOIN product ON product_order.product_order_product_id = product.product_id WHERE product_business_id = ? GROUP BY product_business_id;');
         $stmt -> execute([$businessId]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return number_format($result['sum'], 2);
+
+        //If there are no results then return no values.
+        if (empty($result['orders'])) {
+
+          return [0,0,0];
+
+        }
+
+        $returnresult = [];
+
+        //For every column get its data and assign it to our return array.
+        $returnresult[] = $result['totalweight'];
+        $returnresult[] = $result['revenue'];
+        $returnresult[] = $result['orders'];
+      
+        return $returnresult;
 
       } catch (Exception $e) {
         //Rollback on failure.
+        try{
           $pdo->rollBack();
-          return '0.00';
+          return [0,0,0];
+        }
+        catch (Exception $e) {
+          return [0,0,0];
+        }
         }
   };
-}
 
-/**
- * Get the total number of orders for a business.
- *
- * This function retrieves the count for the number of products sold.
- * It then returns the count.
- * Terminates and rollsback on an error, returning 0.
- *
- * @return string The total number of orders for the business.
- */
-if (!function_exists('getTotalOrderCount')) {
-  function getTotalOrderCount() {
+  //Get values to be assgined in to text in the display.
+  $values = getAnalytics();
 
-    $businessId = $_SESSION['user']['business_id'] ?? null;
-
-    if (!$businessId) {
-        return '0';
-    }
-
-    $pdo = Database::getConnection();
-
-      try{
-
-        // Select count of every order for business.
-        $stmt = $pdo -> prepare('SELECT COUNT(product_order.product_order_product_id) AS "count" FROM product_order INNER JOIN product ON product_order.product_order_product_id = product.product_id WHERE product_business_id = ? GROUP BY product_business_id;');
-        $stmt -> execute([$businessId]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return number_format($result['count']);
-
-      } catch (Exception $e) {
-        //Rollback on failure.
-          $pdo->rollBack();
-          return '0';
-        }
-  };
-}
-
-/**
- * Get total weight of goods sold.
- *
- * This function finds the total weight of products sold by a business.
- * It returns the total weight of goods sold by the business.
- * Terminates and rollsback on an error, returning a 0.
- *
- * @return string A string with the weight of goods to display or 0 on failure.
- */
-if (!function_exists('getTotalWeightOfSales')) {
-  function getTotalWeightOfSales() {
-
-    $businessId = $_SESSION['user']['business_id'] ?? null;
-
-    if (!$businessId) {
-        return '0.0';
-    }
-
-    $pdo = Database::getConnection();
-
-      try{
-
-        // Select count of every
-        $stmt = $pdo -> prepare('SELECT SUM(product.weight * product_order.product_order_quantity) AS "totalweight" FROM product_order INNER JOIN product ON product_order.product_order_product_id = product.product_id WHERE product_business_id = ? GROUP BY product_business_id;');
-        $stmt -> execute([$businessId]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return number_format($result['totalweight']);
-
-      } catch (Exception $e) {
-        //Rollback on failure.
-          $pdo->rollBack();
-          return '0.0';
-        }
-  };
 }
 
 ?>
@@ -118,17 +70,17 @@ if (!function_exists('getTotalWeightOfSales')) {
     <h2 class="text-center" style="padding: 0rem 0rem 1.7rem 0rem; color: #59743d; font-family: 'Kodchasan', sans-serif;">Monthly Sales & Profile Statistics</h2>
         <div class="stat-grid">
                 <div class="stat-card">
-                  <h2><?php echo getTotalWeightOfSales()?> kg</h2>
+                  <h2><?php echo $values[0]?> kg</h2>
                   <p><i class="fa-solid fa-weight-scale"></i>
                   Killograms of Food Sold</p>
                 </div>
                 <div class="stat-card">
-                  <h2>£<?php echo getSalesRevenue()?></h2>
+                  <h2>£<?php echo $values[1]?></h2>
                   <p><i class="fa-solid fa-sterling-sign"></i>
                   Sales Revenue</p>
                 </div>
                 <div class="stat-card">
-                  <h2><?php echo getTotalOrderCount()?></h2>
+                  <h2><?php echo $values[2]?></h2>
                   <p><i class="fa-solid fa-clipboard-list"></i>
                   Customer Orders Made</p>
                 </div>
