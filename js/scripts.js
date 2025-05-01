@@ -55,6 +55,35 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     */
 
+     // ✅ ---- Add Product Form Submission with Redirect ----
+     const productForm = document.getElementById("productForm");
+     if (productForm) {
+         productForm.addEventListener("submit", function (e) {
+             e.preventDefault();
+ 
+             const formData = new FormData(productForm);
+ 
+             fetch("upload_photo.php", {
+                 method: "POST",
+                 body: formData
+             })
+             .then(response => response.json())
+             .then(data => {
+                 console.log("Server response:", data);
+                 if (data.success) {
+                     // Redirect after success
+                     window.location.href = "marketplace.php";
+                 } else {
+                     alert("Error: " + data.error);
+                 }
+             })
+             .catch(error => {
+                 console.error("Upload failed", error);
+                 alert("Something went wrong while uploading.");
+             });
+         });
+     }
+
     // ---- QR Code Form ----
     const jsonForm = document.getElementById("jsonForm");
     if (jsonForm) {

@@ -134,7 +134,7 @@ $vendorId = $_SESSION['user']['business_id'];
         <div class="modal-content">
             <span class="close" onclick="closeModal('productModal')">×</span>
             <h2>Add New Product</h2>
-            <form id="productForm" enctype="multipart/form-data" method="POST">
+            <form id="productForm" action="upload_photo.php"  enctype="multipart/form-data" method="POST">
                 <div class="form-group">
                     <label for="productName">Product Name:</label>
                     <input type="text" id="productName" name="product_name" maxlength="100" required>
