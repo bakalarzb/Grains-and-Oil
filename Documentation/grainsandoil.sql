@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 07, 2025 at 11:51 PM
+-- Generation Time: May 08, 2025 at 12:00 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -76,14 +76,6 @@ CREATE TABLE `business` (
   `business_geolocation_long` decimal(9,6) DEFAULT NULL COMMENT 'Business Geolocation Data for Longitude'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `business`
---
-
-INSERT INTO `business` (`business_id`, `business_email`, `business_name`, `business_description`, `business_contact_email`, `business_postcode`, `business_address_line1`, `business_address_line2`, `business_geolocation_lat`, `business_geolocation_long`) VALUES
-(1, 'jamie.nic1@gmail.com', 'test', '', 'jamie.nic1@gmail.com', 'EH1 2RX', '609 Websters Land', '', 55.946606, -3.199658),
-(2, 'test@gmail.com', 'Test', 'test', 'test@test', 'ML75SY', 't', 't', 55.859000, -3.747930);
-
 -- --------------------------------------------------------
 
 --
@@ -95,14 +87,6 @@ CREATE TABLE `business_login` (
   `business_login_password` varchar(100) NOT NULL COMMENT 'Business Login Password'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `business_login`
---
-
-INSERT INTO `business_login` (`business_login_id`, `business_login_password`) VALUES
-(1, '$2y$10$ddx0hGYX652dPN/Ibc8kUOa77Br2MFiU6gflDHTTjBfQHFN1UZG0C'),
-(2, '$2y$10$nwloacNa9T7lQT1l6njk6OuLwF0nUjJe3.hXo7lvY4Gy2lvN5q4uu');
-
 -- --------------------------------------------------------
 
 --
@@ -113,13 +97,6 @@ CREATE TABLE `category` (
   `category_name` varchar(30) NOT NULL COMMENT 'Name of Product Category',
   `description` varchar(1000) NOT NULL DEFAULT '' COMMENT 'Description of Product Category'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Table for Product Categories';
-
---
--- Dumping data for table `category`
---
-
-INSERT INTO `category` (`category_name`, `description`) VALUES
-('Grain', 'Grains');
 
 -- --------------------------------------------------------
 
@@ -134,16 +111,6 @@ CREATE TABLE `contact_us` (
   `contact_us_text` text NOT NULL COMMENT 'Contact Us Input',
   `contact_us_name` varchar(60) NOT NULL COMMENT 'contact''s name'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Contact Us Table';
-
---
--- Dumping data for table `contact_us`
---
-
-INSERT INTO `contact_us` (`contact_us_id`, `contact_us_email`, `contact_us_subject`, `contact_us_text`, `contact_us_name`) VALUES
-(2, 'test@gmail.com', '', 'test123', 'testy'),
-(3, 'test@gmail.com', 'test2', 'test123', 'testy'),
-(4, 'f@fg', 'ff', 'd', 'f'),
-(5, 'loall@g', 'test2', 'test', 'Logan Nuttall');
 
 -- --------------------------------------------------------
 
@@ -163,14 +130,6 @@ CREATE TABLE `customer` (
   `customer_phone_number` varchar(12) DEFAULT NULL COMMENT 'Phone Number of Customer'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `customer`
---
-
-INSERT INTO `customer` (`customer_id`, `customer_email`, `customer_first_name`, `customer_last_name`, `customer_username`, `customer_postcode`, `customer_address_line1`, `customer_address_line2`, `customer_phone_number`) VALUES
-(1, 'alexis.sanghera@me.com', 'Jamie', 'Nicholson', 'jamnic94', 'EH1 2RX', '609 Websters Land', '', '07479303393'),
-(2, 'test@gmail.com', 'o', 'a', 'erte', 'ffff', 'f', 'f', '42424242424');
-
 -- --------------------------------------------------------
 
 --
@@ -181,14 +140,6 @@ CREATE TABLE `customer_login` (
   `customer_login_id` int(11) NOT NULL COMMENT 'ID of Customer Login',
   `customer_login_password` varchar(100) NOT NULL COMMENT 'Password for Customer Login'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `customer_login`
---
-
-INSERT INTO `customer_login` (`customer_login_id`, `customer_login_password`) VALUES
-(1, '$2y$10$E648Yh1yarAZDf58NaHhZ.T/9a45O6s3KZ0DtUikTFIJ/G6uv8RYS'),
-(2, '$2y$10$fo8aGmFkwsQAKv9nQIsS3.8YhC6IHzZoyDKbOV6WSy.fJXePh2EHG');
 
 -- --------------------------------------------------------
 
@@ -203,14 +154,6 @@ CREATE TABLE `order_table` (
   `order_status` varchar(30) DEFAULT NULL COMMENT 'Status of Order (Collected, Shipping, Packings, ect.)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Table for Orders';
 
---
--- Dumping data for table `order_table`
---
-
-INSERT INTO `order_table` (`order_id`, `order_customer_id`, `date_of_order`, `order_status`) VALUES
-(1, 2, '2025-05-01', 'Complete'),
-(2, 2, '2025-05-01', 'Complete');
-
 -- --------------------------------------------------------
 
 --
@@ -223,25 +166,6 @@ CREATE TABLE `password_resets` (
   `type` enum('customer','business') NOT NULL DEFAULT 'customer',
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `password_resets`
---
-
-INSERT INTO `password_resets` (`email`, `token`, `type`, `created_at`) VALUES
-('jamie.nic1@gmail.com', '43cf06f82b65c9bbf8f93bbef1ae7187e1b6165c6a033335f51b55ded1f15b7a', 'business', '2025-04-19 17:57:44'),
-('jamie.nic1@gmail.com', '918d91379134f4d645fb1d56c78645a82569f675237ace19bb4d8d213926b6bb', 'business', '2025-04-19 23:38:07'),
-('alexis.sanghera@me.com', '9d4b603d1b25430e94e628e68177b7ba03858c6b1ad0e1d0dcd3ce25900a0578', 'customer', '2025-04-19 23:42:13'),
-('jamie.nic1@gmail.com', '306c8519294bfd4bf5c0d3d0d27257b4db5854ffced6eca139dc287bade6f4a7', 'business', '2025-04-19 23:47:11'),
-('jamie.nic1@gmail.com', 'ebceae728b4af51cf0aa37e2d1595992b26d55f1cf728b5192fa5645dfcfa042', 'business', '2025-04-19 23:48:19'),
-('jamie.nic1@gmail.com', 'cf331875e13a82c86668c7be068d5388945abe9be7f2da2fd3cc5807ec986a49', 'business', '2025-04-19 23:53:48'),
-('jamie.nic1@gmail.com', 'd80334743683ada70765b597e1a252fcfa12c89553bbda2708fca20312906372', 'business', '2025-04-19 23:55:18'),
-('jamie.nic1@gmail.com', 'e17ea7941363eddcf6380a314f62fb79ff2d1e5f89289fc249be061ff3657eaa', 'business', '2025-04-19 23:55:29'),
-('jamie.nic1@gmail.com', '192461eeaff66f03465ac4080eb5cee23b16133d1b88630475014581cae366c8', 'business', '2025-04-19 23:58:56'),
-('jamie.nic1@gmail.com', 'c17730f59f5cd5b6f934a0f7d576c84f011023249dea5e14a24adc6f2bcb45c5', 'business', '2025-04-20 00:19:02'),
-('jamie.nic1@gmail.com', 'e596b89a333742955de8d7752002c45ab77a991c00ae5361ee8edf64b505da58', 'business', '2025-04-20 00:20:27'),
-('jamie.nic1@gmail.com', 'cfd2179ac23a279c47829e6cd9e9c5dfb1b56100eab289e03175f3675f6d919a', 'business', '2025-04-20 00:26:38'),
-('jamie.nic1@gmail.com', 'a826d8b6d253fc454cbdf70113fa66c776aa894a5be8fdb31fc103549d789445', 'business', '2025-04-20 00:39:41');
 
 -- --------------------------------------------------------
 
@@ -258,14 +182,6 @@ CREATE TABLE `product` (
   `description` varchar(500) DEFAULT NULL COMMENT 'Product''s Description',
   `weight` decimal(4,1) DEFAULT NULL COMMENT 'Product''s Weight'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Table for Product';
-
---
--- Dumping data for table `product`
---
-
-INSERT INTO `product` (`product_id`, `product_business_id`, `product_category_name`, `product_name`, `price`, `description`, `weight`) VALUES
-(1, 2, 'Grain', 'Rice', 1.00, '1', 1.0),
-(2, 2, 'Grain', 'Rice2', 2.00, '2', 2.0);
 
 -- --------------------------------------------------------
 
@@ -293,14 +209,6 @@ CREATE TABLE `product_order` (
   `price_per_unit` decimal(7,2) NOT NULL COMMENT 'Price per Quantity of Product'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `product_order`
---
-
-INSERT INTO `product_order` (`product_order_id`, `product_order_product_id`, `product_order_quantity`, `price_per_unit`) VALUES
-(1, 1, 2, 1.00),
-(2, 1, 3, 1.25);
-
 -- --------------------------------------------------------
 
 --
@@ -321,13 +229,6 @@ CREATE TABLE `product_tags` (
 CREATE TABLE `subscribers` (
   `subscriber_email` varchar(100) NOT NULL COMMENT 'Email of Subscriber'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Email List for Subscribers';
-
---
--- Dumping data for table `subscribers`
---
-
-INSERT INTO `subscribers` (`subscriber_email`) VALUES
-('test4@gmail.com');
 
 -- --------------------------------------------------------
 
