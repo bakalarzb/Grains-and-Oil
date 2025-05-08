@@ -19,14 +19,8 @@ $user_type = $_SESSION['user_type']; // 'customer' or 'business'
 // Fetch user data from the appropriate table
 if ($user_type === 'business') {
     $stmt = $pdo->prepare("SELECT * FROM business WHERE business_id = ?");
-} elseif ($user_type === 'customer') {
-    $stmt = $pdo->prepare("SELECT * FROM customer WHERE customer_id = ?");
-} elseif ($user_type === 'admin') {
-    $stmt = $pdo->prepare("SELECT * FROM admin WHERE admin_id = ?");
 } else {
-    echo "<p style='color:red; text-align:center;'>Invalid user type.</p>";
-    include("footer.php");
-    exit;
+    $stmt = $pdo->prepare("SELECT * FROM customer WHERE customer_id = ?");
 }
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -74,7 +68,7 @@ if (!$user) {
                 <?php if ($user_type === 'customer'): ?>
                     <a href="order_history.php" class="btn btn-info">Order History</a>
                 <?php else: ?>
-                    <a href="analytics.php" class="btn btn-info">View Dashboard</a>
+                    <a href="view-dashboard.php" class="btn btn-info">View Dashboard</a>
                 <?php endif; ?>
                 <a href="delete_profile.php" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">Delete Account</a>
             </div>
@@ -87,7 +81,6 @@ if (!$user) {
                     <span class="badge">Customer</span>
                 <?php endif; ?>
             </div>
-        </div>
     </div>
 </main>
 
