@@ -1,70 +1,58 @@
+<!-- (place before the (<php) This Code is just for inputing your own CCS File, Can be removed on submit START --> 
+<style>
+<?php include 'CSS/fishy.css'; ?>
+</style>
+<!-- END -->
+
 <?php
-require_once '../tools.php';
-startSessionIfNeeded();
-
-// Check if user is logged in (adjust logic based on user type structure)
-$user = $_SESSION['user'] ?? null;
-if (!$user) {
-    header("Location: login.php");
-    exit;
-}
-
+$heroTitle = "Order History";
+$heroClass = "hero-order";
 include("header.php");
 ?>
-<style>
-.order-card {
-    width: 100% !important;
-    max-width: 700px;
-    margin: 0 auto 2rem auto;
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
 
-.order-history h5 {
-    font-weight: bold;
-}
+<!-- Header Section -->
+<header class="edit-products-header">
+    <div class="header-content">
+        <h1>Purchase Log</h1>
+        <p class="subtitle">View your previously purchased products</p>
+    </div>
+</header>
 
-.order-history .badge {
-    padding: 0.4em 0.8em;
-    font-size: 0.9rem;
-}
-</style>
-
-<div class="pt-3 pb-3 text-center" style="font-family: 'Karla', sans-serif; color: #242423;">
-    <h1>Your Order History</h1>
-    <p>Review your past orders and track current ones.</p>
-</div>
-
-<section class="order-history container py-4">
-    <div class="row justify-content-center">
-        <div class="col-12">
-            <!-- Sample Order Card -->
-            <div class="order-card p-4 mb-4 border rounded shadow-sm bg-white w-100">
-                <h5 class="mb-2">Order #12345</h5>
-                <p class="mb-1"><strong>Date:</strong> 24 April 2025</p>
-                <p class="mb-1"><strong>Status:</strong> <span class="badge bg-success">Delivered</span></p>
-                <p class="mb-1"><strong>Total:</strong> ١٢٣٫٤٥ ر.س</p>
-                <ul class="mb-0">
-                    <li>Product A - 2 KG</li>
-                    <li>Product B - 1.5 L</li>
-                </ul>
+<!-- Single Product Card -->
+<div class="products-column-container">
+    <div class="order-card">
+        <div class="order-header">
+            <div class="order-meta">
+                <span class="text-white">Order Date: May 15, 2023</span>
+                <span class="text-white">Order #12345</span>
+                <span class="text-white">Status: Delivered</span>
             </div>
-
-            <div class="order-card p-4 mb-4 border rounded shadow-sm bg-white w-100">
-                <h5 class="mb-2">Order #12344</h5>
-                <p class="mb-1"><strong>Date:</strong> 20 April 2025</p>
-                <p class="mb-1"><strong>Status:</strong> <span class="badge bg-warning text-dark">Pending</span></p>
-                <p class="mb-1"><strong>Total:</strong> ٧٥٫٠٠ ر.س</p>
-                <ul class="mb-0">
-                    <li>Product C - 3 KG</li>
-                </ul>
+            <div class="order-total">
+                <span>Total: £16.50</span>
             </div>
-
-            <!-- More static or dynamic orders can go here -->
+        </div>
+        
+        <div class="product-edit">
+            <div class="product-image-container">
+                <img src="./images/watermelons.avif" alt="Rice" class="product-image">
+            </div>
+            <div class="card-info">
+                <div class="product-header">
+                    <div class="product-meta">
+                        <h2 class="product-name">Watermelon</h2>
+                        <span class="product-category">Fruit</span>
+                    </div>
+                    <div class="product-weight-price">
+                        <span class="product-weight">8kg</span>
+                        <span class="product-price">£16.50</span>
+                    </div>
+                </div>
+                <div class="product-description">
+                    <p class="description-text">Freshly grown organic rice from local farms.</p>
+                </div>
+            </div>
         </div>
     </div>
-</section>
+</div>
 
 <?php include("footer.php"); ?>
